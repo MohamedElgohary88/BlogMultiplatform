@@ -8,6 +8,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.core.Page
 import org.jetbrains.compose.web.dom.Text
 import com.varabyte.kobweb.worker.rememberWorker
+import org.example.blogmultiplatform.pages.admin.LoginScreen
 import org.example.blogmultiplatform.worker.EchoWorker
 
 @Page

@@ -6,7 +6,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "blogmultiplatform"
+rootProject.name = "BlogMultiplatform"
 
 include(":site")
 include(":worker")
