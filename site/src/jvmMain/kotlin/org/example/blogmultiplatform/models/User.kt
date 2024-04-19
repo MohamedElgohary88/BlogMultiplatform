@@ -13,7 +13,7 @@ actual data class User(
 )
 
 @Serializable
-data class UserWithoutPassword(
+actual data class UserWithoutPassword(
     @SerialName(value = "_id")
     actual val id: String = ObjectIdGenerator.newObjectId<String>().id.toHexString(),
     actual val username: String = ""
