@@ -9,6 +9,7 @@ import com.varabyte.kobweb.api.data.getValue
 import com.varabyte.kobweb.api.http.setBodyText
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 
@@ -35,6 +36,25 @@ suspend fun userCheck(context: ApiContext) {
         context.res.setBodyText(Json.encodeToString(Exception(e.message)))
     }
 }
+
+@Api(routeOverride = "checkuserid")
+suspend fun checkUserId(context: ApiContext) {
+    try {
+        val idRequest =
+            context.req.body?.decodeToString()?.let { Json.decodeFromString<String>(it) }
+        val result = idRequest?.let {
+            context.data.getValue<MongoDB>().checkUserId(it)
+        }
+        if (result != null) {
+            context.res.setBodyText(Json.encodeToString(result))
+        } else {
+            context.res.setBodyText(Json.encodeToString(false))
+        }
+    } catch (e: Exception) {
+        context.res.setBodyText(Json.encodeToString(false))
+    }
+}
+
 
 private fun hashPassword(password: String): String {
     val messageDigest = MessageDigest.getInstance("SHA-256")

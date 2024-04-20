@@ -25,6 +25,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.height
+import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.outline
@@ -60,10 +61,9 @@ import org.w3c.dom.set
 @Page(routeOverride = "login")
 @Composable
 fun LoginScreen() {
-
     val scope = rememberCoroutineScope()
     val context = rememberPageContext()
-    var errorText by remember { mutableStateOf("") }
+    var errorText by remember { mutableStateOf(" ") }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -86,6 +86,7 @@ fun LoginScreen() {
             Input(
                 type = InputType.Text,
                 attrs = LoginInputStyle.toModifier()
+                    .id(Id.usernameInput)
                     .margin(bottom = 12.px)
                     .width(350.px)
                     .height(54.px)
@@ -105,6 +106,7 @@ fun LoginScreen() {
             Input(
                 type = InputType.Password,
                 attrs = LoginInputStyle.toModifier()
+                    .id(Id.passwordInput)
                     .margin(bottom = 20.px)
                     .width(350.px)
                     .height(54.px)
@@ -158,7 +160,7 @@ fun LoginScreen() {
                                 )
                                 if (user != null) {
                                     rememberLoggedIn(remember = true, user = user)
-                                    context.router.navigateTo("admin/home")
+                                    context.router.navigateTo("/admin/home")
                                 } else {
                                     errorText = "The user doesn't exist."
                                     delay(3000)
@@ -179,7 +181,8 @@ fun LoginScreen() {
                 modifier = Modifier
                     .width(350.px)
                     .color(Colors.Red)
-                    .textAlign(TextAlign.Center),
+                    .textAlign(TextAlign.Center)
+                    .fontFamily(FONT_FAMILY),
                 text = errorText
             )
         }
