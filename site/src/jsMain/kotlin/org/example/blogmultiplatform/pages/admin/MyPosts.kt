@@ -13,25 +13,23 @@ import org.example.blogmultiplatform.utils.Constants.PAGE_WIDTH
 import org.example.blogmultiplatform.utils.isUserLoggedIn
 import org.jetbrains.compose.web.css.px
 
-@Page(routeOverride = "home")
+@Page
 @Composable
-fun HomePage() {
+fun MyPostsPage() {
     isUserLoggedIn {
-        HomeScreen()
+        MyPostsScreen()
     }
 }
 
 @Composable
-fun HomeScreen() {
-    println("Admin Home Page")
+fun MyPostsScreen() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .maxWidth(PAGE_WIDTH.px)
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .maxWidth(PAGE_WIDTH.px)
         ) {
             SidePanel()
         }
