@@ -8,9 +8,11 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.height
@@ -26,21 +28,38 @@ import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
+import com.varabyte.kobweb.silk.components.icons.fa.FaBars
+import com.varabyte.kobweb.silk.components.icons.fa.IconSize
+import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
+import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.navigation.Screen
 import org.example.blogmultiplatform.styles.NavigationItemStyle
+import org.example.blogmultiplatform.utils.Constants.COLLAPSED_PANEL_HEIGHT
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
 import org.example.blogmultiplatform.utils.Constants.SIDE_PANEL_WIDTH
 import org.example.blogmultiplatform.utils.Id
 import org.example.blogmultiplatform.utils.Res
+import org.example.blogmultiplatform.utils.Res.PathIcon.logout
+import org.example.blogmultiplatform.utils.logout
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
 
 @Composable
-fun SidePanel() {
+fun SidePanel(onMenuClick: () -> Unit) {
+    val breakpoint = rememberBreakpoint()
+    if (breakpoint > Breakpoint.MD) {
+        SidePanelInternal()
+    } else {
+        CollapsedSidePanel(onMenuClick = onMenuClick)
+    }
+}
+
+@Composable
+private fun SidePanelInternal() {
     val context = rememberPageContext()
     Column(
         modifier = Modifier
@@ -69,26 +88,61 @@ fun SidePanel() {
             title = "Home",
             selected = context.route.path == Screen.AdminHome.route,
             icon = Res.PathIcon.home,
-            onClick = {}
+            onClick = {
+                context.router.navigateTo(Screen.AdminHome.route)
+            }
         )
         NavigationItem(
             modifier = Modifier.margin(bottom = 24.px),
             title = "Create Post",
             selected = context.route.path == Screen.AdminCreate.route,
             icon = Res.PathIcon.create,
-            onClick = {}
+            onClick = {
+                context.router.navigateTo(Screen.AdminCreate.route)
+            }
         )
         NavigationItem(
             modifier = Modifier.margin(bottom = 24.px),
             title = "My Posts",
             selected = context.route.path == Screen.AdminMyPosts.route,
             icon = Res.PathIcon.posts,
-            onClick = {}
+            onClick = {
+                context.router.navigateTo(Screen.AdminMyPosts.route)
+            }
         )
         NavigationItem(
             title = "Logout",
             icon = Res.PathIcon.logout,
-            onClick = {}
+            onClick = {
+                logout()
+                context.router.navigateTo(Screen.AdminLogin.route)
+            }
+        )
+    }
+}
+
+@Composable
+fun CollapsedSidePanel(onMenuClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(COLLAPSED_PANEL_HEIGHT.px)
+            .padding(leftRight = 24.px)
+            .backgroundColor(Theme.Secondary.rgb),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        FaBars(
+            modifier = Modifier
+                .margin(right = 24.px)
+                .color(Colors.White)
+                .cursor(Cursor.Pointer)
+                .onClick { onMenuClick() },
+            size = IconSize.XL
+        )
+        Image(
+            modifier = Modifier.width(80.px),
+            src = Res.Image.logo,
+            description = "Logo Image"
         )
     }
 }
