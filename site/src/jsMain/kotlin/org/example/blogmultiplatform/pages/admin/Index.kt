@@ -1,6 +1,10 @@
 package org.example.blogmultiplatform.pages.admin
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
@@ -8,6 +12,7 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.core.Page
+import org.example.blogmultiplatform.components.OverflowSidePanel
 import org.example.blogmultiplatform.components.SidePanel
 import org.example.blogmultiplatform.utils.Constants.PAGE_WIDTH
 import org.example.blogmultiplatform.utils.isUserLoggedIn
@@ -23,6 +28,7 @@ fun HomePage() {
 
 @Composable
 fun HomeScreen() {
+    var overflowMenuOpened by remember { mutableStateOf(false) }
     println("Admin Home Page")
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -33,7 +39,14 @@ fun HomeScreen() {
                 .fillMaxSize()
                 .maxWidth(PAGE_WIDTH.px)
         ) {
-            SidePanel(onMenuClick = {})
+            SidePanel(onMenuClick = {
+                overflowMenuOpened = true
+            })
+            if(overflowMenuOpened) {
+                OverflowSidePanel(onMenuClose = {
+                    overflowMenuOpened = false
+                })
+            }
         }
     }
 }

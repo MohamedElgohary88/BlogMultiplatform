@@ -13,13 +13,14 @@ import org.example.blogmultiplatform.utils.Constants.PAGE_WIDTH
 import org.example.blogmultiplatform.utils.isUserLoggedIn
 import org.jetbrains.compose.web.css.px
 
-@Page
+@Page(routeOverride = "myposts")
 @Composable
 fun MyPostsPage() {
     isUserLoggedIn {
         MyPostsScreen()
     }
 }
+
 
 @Composable
 fun MyPostsScreen() {
