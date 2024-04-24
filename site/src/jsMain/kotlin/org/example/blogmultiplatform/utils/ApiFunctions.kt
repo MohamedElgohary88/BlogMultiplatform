@@ -7,6 +7,7 @@ import kotlinx.browser.window
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.example.blogmultiplatform.models.Post
 import org.example.blogmultiplatform.models.RandomJoke
 import org.example.blogmultiplatform.models.User
 import org.example.blogmultiplatform.models.UserWithoutPassword
@@ -71,6 +72,18 @@ suspend fun checkUserId(id: String): Boolean {
             body = Json.encodeToString(id).encodeToByteArray()
         )
         result?.decodeToString()?.let { Json.decodeFromString<Boolean>(it) } ?: false
+    } catch (e: Exception) {
+        println(e.message.toString())
+        false
+    }
+}
+
+suspend fun addPost(post: Post): Boolean {
+    return try {
+        window.api.tryPost(
+            apiPath = "addpost",
+            body = Json.encodeToString(post).encodeToByteArray()
+        )?.decodeToString().toBoolean()
     } catch (e: Exception) {
         println(e.message.toString())
         false
