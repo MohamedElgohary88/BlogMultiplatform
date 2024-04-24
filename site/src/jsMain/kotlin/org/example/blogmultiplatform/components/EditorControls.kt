@@ -24,9 +24,13 @@ import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
-import org.example.blogmultiplatform.models.EditorKey
+import kotlinx.browser.document
+import org.example.blogmultiplatform.models.EditorControl
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
+import org.example.blogmultiplatform.utils.Id
+import org.example.blogmultiplatform.utils.applyControlStyle
+import org.example.blogmultiplatform.utils.getEditor
 import org.example.blogmultiplatform.utils.noBorder
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Button
@@ -35,7 +39,9 @@ import org.jetbrains.compose.web.dom.Button
 fun EditorControls(
     breakpoint: Breakpoint,
     editorVisibility: Boolean,
-    onEditorVisibilityChange: () -> Unit
+    onEditorVisibilityChange: () -> Unit,
+    onLinkClick: () -> Unit,
+    onImageClick: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
         SimpleGrid(
@@ -48,8 +54,16 @@ fun EditorControls(
                     .borderRadius(r = 4.px)
                     .height(54.px)
             ) {
-                EditorKey.entries.forEach {
-                    EditorKeyView(key = it)
+                EditorControl.entries.forEach {
+                    EditorKeyView(
+                        control = it,
+                        onClick = {
+                            applyControlStyle(
+                                it,
+                                onLinkClick,
+                                onImageClick
+                            )
+                        })
                 }
             }
             Box(contentAlignment = Alignment.CenterEnd) {
@@ -74,7 +88,11 @@ fun EditorControls(
                             else Colors.White
                         )
                         .noBorder()
-                        .onClick { onEditorVisibilityChange() }
+                        .onClick {
+                            onEditorVisibilityChange()
+                            document.getElementById(Id.editorPreview)?.innerHTML = getEditor().value
+                            js("hljs.highlightAll()") as Unit
+                        }
                         .toAttrs()
                 ) {
                     SpanText(

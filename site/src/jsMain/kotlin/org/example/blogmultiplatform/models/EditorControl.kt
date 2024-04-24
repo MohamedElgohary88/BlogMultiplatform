@@ -2,7 +2,7 @@ package org.example.blogmultiplatform.models
 
 import org.example.blogmultiplatform.utils.Res
 
-enum class EditorKey(
+enum class EditorControl(
     val icon: String,
 ) {
     Bold(icon = Res.Icon.bold),
@@ -12,5 +12,5 @@ enum class EditorKey(
     Subtitle(icon = Res.Icon.subtitle),
     Quote(icon = Res.Icon.quote),
     Code(icon = Res.Icon.code),
-    Image(icon = Res.Icon.image),
+    Image(icon = Res.Icon.image)
 }

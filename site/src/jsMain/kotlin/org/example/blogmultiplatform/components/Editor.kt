@@ -16,15 +16,19 @@ import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
+import com.varabyte.kobweb.compose.ui.modifiers.onKeyDown
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.resize
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.toAttrs
+import org.example.blogmultiplatform.models.ControlStyle
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
 import org.example.blogmultiplatform.utils.Id
+import org.example.blogmultiplatform.utils.applyStyle
+import org.example.blogmultiplatform.utils.getSelectedText
 import org.example.blogmultiplatform.utils.noBorder
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
@@ -48,7 +52,15 @@ fun Editor(editorVisibility: Boolean) {
                 .visibility(
                     if (editorVisibility) Visibility.Visible
                     else Visibility.Hidden
-                )
+                ).onKeyDown {
+                    if (it.code == "Enter" && it.shiftKey) {
+                        applyStyle(
+                            controlStyle = ControlStyle.Break(
+                                selectedText = getSelectedText()
+                            )
+                        )
+                    }
+                }
                 .fontFamily(FONT_FAMILY)
                 .fontSize(16.px)
                 .toAttrs {

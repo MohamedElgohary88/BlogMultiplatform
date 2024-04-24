@@ -6,26 +6,35 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.varabyte.kobweb.browser.file.loadDataUrlFromDisk
+import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.disabled
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxHeight
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
+import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Switch
 import com.varabyte.kobweb.silk.components.forms.SwitchSize
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
@@ -42,19 +51,25 @@ import org.example.blogmultiplatform.components.CategoryDropdown
 import org.example.blogmultiplatform.components.CreateButton
 import org.example.blogmultiplatform.components.Editor
 import org.example.blogmultiplatform.components.EditorControls
+import org.example.blogmultiplatform.components.ControlPopup
 import org.example.blogmultiplatform.components.MessagePopup
-import org.example.blogmultiplatform.components.ThumbnailUploader
 import org.example.blogmultiplatform.models.Category
+import org.example.blogmultiplatform.models.ControlStyle
+import org.example.blogmultiplatform.models.EditorControl
 import org.example.blogmultiplatform.models.Post
 import org.example.blogmultiplatform.models.Theme
+import org.example.blogmultiplatform.navigation.Screen
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
 import org.example.blogmultiplatform.utils.Constants.SIDE_PANEL_WIDTH
 import org.example.blogmultiplatform.utils.Id
 import org.example.blogmultiplatform.utils.addPost
+import org.example.blogmultiplatform.utils.applyStyle
+import org.example.blogmultiplatform.utils.getSelectedText
 import org.example.blogmultiplatform.utils.isUserLoggedIn
 import org.example.blogmultiplatform.utils.noBorder
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Input
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLTextAreaElement
@@ -73,7 +88,9 @@ data class CreatePageUiState(
     var main: Boolean = false,
     var sponsored: Boolean = false,
     var editorVisibility: Boolean = true,
-    var messagePopup: Boolean = false
+    var messagePopup: Boolean = false,
+    var linkPopup: Boolean = false,
+    var imagePopup: Boolean = false
 )
 
 @Page
@@ -87,6 +104,7 @@ fun CreatePage() {
 @Composable
 fun CreateScreen() {
     val scope = rememberCoroutineScope()
+    val context = rememberPageContext()
     val breakpoint = rememberBreakpoint()
     var uiState by remember { mutableStateOf(CreatePageUiState()) }
 
@@ -242,6 +260,12 @@ fun CreateScreen() {
                         uiState = uiState.copy(
                             editorVisibility = !uiState.editorVisibility
                         )
+                    },
+                    onLinkClick = {
+                        uiState = uiState.copy(linkPopup = true)
+                    },
+                    onImageClick = {
+                        uiState = uiState.copy(imagePopup = true)
                     }
                 )
                 Editor(editorVisibility = uiState.editorVisibility)
@@ -279,7 +303,7 @@ fun CreateScreen() {
                                     )
                                 )
                                 if (result) {
-                                    println("Successful!")
+                                    context.router.navigateTo(Screen.AdminSuccess.route)
                                 }
                             }
                         } else {
@@ -294,10 +318,103 @@ fun CreateScreen() {
             }
         }
     }
-    if(uiState.messagePopup) {
+    if (uiState.messagePopup) {
         MessagePopup(
             message = "Please fill out all fields.",
-            onDialogDismiss = { uiState = uiState.copy(messagePopup = false)}
+            onDialogDismiss = { uiState = uiState.copy(messagePopup = false) }
         )
+    }
+    if (uiState.linkPopup) {
+        ControlPopup(
+            editorControl = EditorControl.Link,
+            onDialogDismiss = { uiState = uiState.copy(linkPopup = false) },
+            onAddClick = { href, title ->
+                applyStyle(
+                    ControlStyle.Link(
+                        selectedText = getSelectedText(),
+                        href = href,
+                        title = title
+                    )
+                )
+            }
+        )
+    }
+    if (uiState.imagePopup) {
+        ControlPopup(
+            editorControl = EditorControl.Image,
+            onDialogDismiss = { uiState = uiState.copy(imagePopup = false) },
+            onAddClick = { imageUrl, description ->
+                applyStyle(
+                    ControlStyle.Image(
+                        selectedText = getSelectedText(),
+                        imageUrl = imageUrl,
+                        desc = description
+                    )
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun ThumbnailUploader(
+    thumbnail: String,
+    thumbnailInputDisabled: Boolean,
+    onThumbnailSelect: (String, String) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .margin(bottom = 20.px)
+            .height(54.px)
+    ) {
+        Input(
+            type = InputType.Text,
+            attrs = Modifier
+                .id(Id.thumbnailInput)
+                .fillMaxSize()
+                .margin(right = 12.px)
+                .padding(leftRight = 20.px)
+                .backgroundColor(Theme.LightGray.rgb)
+                .borderRadius(r = 4.px)
+                .noBorder()
+                .fontFamily(FONT_FAMILY)
+                .fontSize(16.px)
+                .thenIf(
+                    condition = thumbnailInputDisabled,
+                    other = Modifier.disabled()
+                )
+                .toAttrs {
+                    attr("placeholder", "Thumbnail")
+                    attr("value", thumbnail)
+                }
+        )
+        Button(
+            attrs = Modifier
+                .onClick {
+                    document.loadDataUrlFromDisk(
+                        accept = "image/png, image/jpeg",
+                        onLoad = {
+                            onThumbnailSelect(filename, it)
+                        }
+                    )
+                }
+                .fillMaxHeight()
+                .padding(leftRight = 24.px)
+                .backgroundColor(if (!thumbnailInputDisabled) Theme.Gray.rgb else Theme.Primary.rgb)
+                .color(if (!thumbnailInputDisabled) Theme.DarkGray.rgb else Colors.White)
+                .borderRadius(r = 4.px)
+                .noBorder()
+                .fontFamily(FONT_FAMILY)
+                .fontWeight(FontWeight.Medium)
+                .fontSize(14.px)
+                .thenIf(
+                    condition = !thumbnailInputDisabled,
+                    other = Modifier.disabled()
+                )
+                .toAttrs()
+        ) {
+            SpanText(text = "Upload")
+        }
     }
 }
