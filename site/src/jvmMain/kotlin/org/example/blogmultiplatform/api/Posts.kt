@@ -8,6 +8,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
 import org.example.blogmultiplatform.data.MongoDB
+import org.example.blogmultiplatform.models.ApiListResponse
 import org.example.blogmultiplatform.models.Post
 import org.litote.kmongo.id.ObjectIdGenerator
 
@@ -24,5 +25,26 @@ suspend fun addPost(context: ApiContext) {
         )
     } catch (e: Exception) {
         context.res.setBodyText(Json.encodeToString(e.message))
+    }
+}
+
+@Api(routeOverride = "readmyposts")
+suspend fun readMyPosts(context: ApiContext) {
+    try {
+        val skip = context.req.params["skip"]?.toInt() ?: 0
+        val author = context.req.params["author"] ?: ""
+        val myPosts = context.data.getValue<MongoDB>().readMyPosts(
+            skip = skip,
+            author = author
+        )
+        context.res.setBodyText(
+            Json.encodeToString(ApiListResponse.Success(data = myPosts))
+        )
+    } catch (e: Exception) {
+        context.res.setBodyText(
+            Json.encodeToString(
+                ApiListResponse.Error(message = e.message.toString())
+            )
+        )
     }
 }

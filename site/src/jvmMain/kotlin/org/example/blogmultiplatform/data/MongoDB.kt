@@ -7,7 +7,11 @@ import com.varabyte.kobweb.api.init.InitApi
 import com.varabyte.kobweb.api.init.InitApiContext
 import kotlinx.coroutines.reactive.awaitFirst
 import org.example.blogmultiplatform.models.Post
+import org.example.blogmultiplatform.models.PostWithoutDetails
+import org.example.blogmultiplatform.util.Constants.POSTS_PER_PAGE
 import org.litote.kmongo.and
+import org.litote.kmongo.coroutine.toList
+import org.litote.kmongo.descending
 import org.litote.kmongo.eq
 import org.litote.kmongo.reactivestreams.KMongo
 import org.litote.kmongo.reactivestreams.getCollection
@@ -29,6 +33,16 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
 
     override suspend fun addPost(post: Post): Boolean {
         return postCollection.insertOne(post).awaitFirst().wasAcknowledged()
+    }
+
+    override suspend fun readMyPosts(skip: Int, author: String): List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::author eq author)
+            .sort(descending(PostWithoutDetails::date))
+            .skip(skip)
+            .limit(POSTS_PER_PAGE)
+            .toList()
     }
 
     override suspend fun checkUserExistence(user: User): User? {
