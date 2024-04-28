@@ -16,7 +16,6 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
-import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
@@ -88,7 +87,7 @@ fun LoginScreen() {
             Input(
                 type = InputType.Text,
                 attrs = LoginInputStyle.toModifier()
-                    .id(Id.usernameInput)
+                    .id(Id.USERNAME_INPUT)
                     .margin(bottom = 12.px)
                     .width(350.px)
                     .height(54.px)
@@ -108,7 +107,7 @@ fun LoginScreen() {
             Input(
                 type = InputType.Password,
                 attrs = LoginInputStyle.toModifier()
-                    .id(Id.passwordInput)
+                    .id(Id.PASSWORD_INPUT)
                     .margin(bottom = 20.px)
                     .width(350.px)
                     .height(54.px)
@@ -141,9 +140,9 @@ fun LoginScreen() {
                     .onClick {
                         scope.launch {
                             val username =
-                                (document.getElementById(Id.usernameInput) as HTMLInputElement).value
+                                (document.getElementById(Id.USERNAME_INPUT) as HTMLInputElement).value
                             val password =
-                                (document.getElementById(Id.passwordInput) as HTMLInputElement).value
+                                (document.getElementById(Id.PASSWORD_INPUT) as HTMLInputElement).value
                             if (username.isNotEmpty() && password.isNotEmpty()) {
                                 val user = checkUserExistence(
                                     user = User(

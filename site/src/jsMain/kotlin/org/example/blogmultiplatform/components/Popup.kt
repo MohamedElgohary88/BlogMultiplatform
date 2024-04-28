@@ -107,7 +107,7 @@ fun ControlPopup(
             Input(
                 type = InputType.Text,
                 attrs = Modifier
-                    .id(Id.linkHrefInput)
+                    .id(Id.LINK_HREF_INPUT)
                     .fillMaxWidth()
                     .height(54.px)
                     .padding(left = 20.px)
@@ -127,7 +127,7 @@ fun ControlPopup(
             Input(
                 type = InputType.Text,
                 attrs = Modifier
-                    .id(Id.linkTitleInput)
+                    .id(Id.LINK_TITLE_INPUT)
                     .fillMaxWidth()
                     .height(54.px)
                     .padding(left = 20.px)
@@ -148,9 +148,9 @@ fun ControlPopup(
                 attrs = Modifier
                     .onClick {
                         val href =
-                            (document.getElementById(Id.linkHrefInput) as HTMLInputElement).value
+                            (document.getElementById(Id.LINK_HREF_INPUT) as HTMLInputElement).value
                         val title =
-                            (document.getElementById(Id.linkTitleInput) as HTMLInputElement).value
+                            (document.getElementById(Id.LINK_TITLE_INPUT) as HTMLInputElement).value
                         onAddClick(href, title)
                         onDialogDismiss()
                     }

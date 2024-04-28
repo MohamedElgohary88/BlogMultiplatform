@@ -12,25 +12,25 @@ import org.example.blogmultiplatform.utils.Id
 import org.jetbrains.compose.web.css.ms
 
 val NavigationItemStyle by ComponentStyle {
-    cssRule(" > #${Id.svgParent} > #${Id.vectorIcon}") {
+    cssRule(" > #${Id.SVG_PARENT} > #${Id.VECTOR_ICON}") {
         Modifier
             .transition(CSSTransition(property = TransitionProperty.All, duration = 300.ms))
             .styleModifier {
                 property("stroke", Theme.White.hex)
             }
     }
-    cssRule(":hover > #${Id.svgParent} > #${Id.vectorIcon}") {
+    cssRule(":hover > #${Id.SVG_PARENT} > #${Id.VECTOR_ICON}") {
         Modifier
             .styleModifier {
                 property("stroke", Theme.Primary.hex)
             }
     }
-    cssRule(" > #${Id.navigationText}") {
+    cssRule(" > #${Id.NAVIGATION_TEXT}") {
         Modifier
             .transition(CSSTransition(property = TransitionProperty.All, duration = 300.ms))
             .color(Theme.White.rgb)
     }
-    cssRule(":hover > #${Id.navigationText}") {
+    cssRule(":hover > #${Id.NAVIGATION_TEXT}") {
         Modifier.color(Theme.Primary.rgb)
     }
 }

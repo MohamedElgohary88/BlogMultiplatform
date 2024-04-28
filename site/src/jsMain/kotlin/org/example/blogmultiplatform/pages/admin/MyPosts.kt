@@ -27,7 +27,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
-import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.visibility
@@ -42,12 +41,10 @@ import kotlinx.coroutines.launch
 import org.example.blogmultiplatform.components.AdminPageLayout
 import org.example.blogmultiplatform.components.Posts
 import org.example.blogmultiplatform.components.SearchBar
-import org.example.blogmultiplatform.components.SidePanel
 import org.example.blogmultiplatform.models.ApiListResponse
 import org.example.blogmultiplatform.models.PostWithoutDetails
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
-import org.example.blogmultiplatform.utils.Constants.PAGE_WIDTH
 import org.example.blogmultiplatform.utils.Constants.POSTS_PER_PAGE
 import org.example.blogmultiplatform.utils.Constants.SIDE_PANEL_WIDTH
 import org.example.blogmultiplatform.utils.deleteSelectedPosts

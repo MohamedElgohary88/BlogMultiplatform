@@ -191,7 +191,7 @@ fun CreateScreen() {
                 Input(
                     type = InputType.Text,
                     attrs = Modifier
-                        .id(Id.titleInput)
+                        .id(Id.TITLE_INPUT)
                         .fillMaxWidth()
                         .height(54.px)
                         .margin(topBottom = 12.px)
@@ -208,7 +208,7 @@ fun CreateScreen() {
                 Input(
                     type = InputType.Text,
                     attrs = Modifier
-                        .id(Id.subtitleInput)
+                        .id(Id.SUBTITLE_INPUT)
                         .fillMaxWidth()
                         .height(54.px)
                         .padding(leftRight = 20.px)
@@ -248,7 +248,7 @@ fun CreateScreen() {
                     thumbnail = uiState.thumbnail,
                     thumbnailInputDisabled = uiState.thumbnailInputDisabled,
                     onThumbnailSelect = { filename, file ->
-                        (document.getElementById(Id.thumbnailInput) as HTMLInputElement).value =
+                        (document.getElementById(Id.THUMBNAIL_INPUT) as HTMLInputElement).value =
                             filename
                         uiState = uiState.copy(thumbnail = file)
                     }
@@ -272,14 +272,14 @@ fun CreateScreen() {
                 CreateButton(
                     onClick = {
                         uiState =
-                            uiState.copy(title = (document.getElementById(Id.titleInput) as HTMLInputElement).value)
+                            uiState.copy(title = (document.getElementById(Id.TITLE_INPUT) as HTMLInputElement).value)
                         uiState =
-                            uiState.copy(subtitle = (document.getElementById(Id.subtitleInput) as HTMLInputElement).value)
+                            uiState.copy(subtitle = (document.getElementById(Id.SUBTITLE_INPUT) as HTMLInputElement).value)
                         uiState =
-                            uiState.copy(content = (document.getElementById(Id.editor) as HTMLTextAreaElement).value)
+                            uiState.copy(content = (document.getElementById(Id.EDITOR) as HTMLTextAreaElement).value)
                         if (!uiState.thumbnailInputDisabled) {
                             uiState =
-                                uiState.copy(thumbnail = (document.getElementById(Id.thumbnailInput) as HTMLInputElement).value)
+                                uiState.copy(thumbnail = (document.getElementById(Id.THUMBNAIL_INPUT) as HTMLInputElement).value)
                         }
                         if (
                             uiState.title.isNotEmpty() &&
@@ -371,7 +371,7 @@ fun ThumbnailUploader(
         Input(
             type = InputType.Text,
             attrs = Modifier
-                .id(Id.thumbnailInput)
+                .id(Id.THUMBNAIL_INPUT)
                 .fillMaxSize()
                 .margin(right = 12.px)
                 .padding(leftRight = 20.px)

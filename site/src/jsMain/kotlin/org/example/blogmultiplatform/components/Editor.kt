@@ -39,7 +39,7 @@ fun Editor(editorVisibility: Boolean) {
     Box(modifier = Modifier.fillMaxWidth()) {
         TextArea(
             attrs = Modifier
-                .id(Id.editor)
+                .id(Id.EDITOR)
                 .fillMaxWidth()
                 .height(400.px)
                 .maxHeight(400.px)
@@ -69,7 +69,7 @@ fun Editor(editorVisibility: Boolean) {
         )
         Div(
             attrs = Modifier
-                .id(Id.editorPreview)
+                .id(Id.EDITOR_PREVIEW)
                 .fillMaxWidth()
                 .height(400.px)
                 .maxHeight(400.px)

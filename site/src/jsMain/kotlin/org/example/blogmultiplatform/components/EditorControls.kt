@@ -90,7 +90,7 @@ fun EditorControls(
                         .noBorder()
                         .onClick {
                             onEditorVisibilityChange()
-                            document.getElementById(Id.editorPreview)?.innerHTML = getEditor().value
+                            document.getElementById(Id.EDITOR_PREVIEW)?.innerHTML = getEditor().value
                             js("hljs.highlightAll()") as Unit
                         }
                         .toAttrs()

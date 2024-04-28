@@ -64,7 +64,7 @@ fun Modifier.noBorder(): Modifier {
     )
 }
 
-fun getEditor() = document.getElementById(Id.editor) as HTMLTextAreaElement
+fun getEditor() = document.getElementById(Id.EDITOR) as HTMLTextAreaElement
 
 fun getSelectedIntRange(): IntRange? {
     val editor = getEditor()
@@ -90,7 +90,7 @@ fun applyStyle(controlStyle: ControlStyle) {
             range = selectedIntRange,
             replacement = controlStyle.style
         )
-        document.getElementById(Id.editorPreview)?.innerHTML = getEditor().value
+        document.getElementById(Id.EDITOR_PREVIEW)?.innerHTML = getEditor().value
     }
 }
 

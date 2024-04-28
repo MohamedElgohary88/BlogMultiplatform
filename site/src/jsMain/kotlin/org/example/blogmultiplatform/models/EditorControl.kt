@@ -5,12 +5,12 @@ import org.example.blogmultiplatform.utils.Res
 enum class EditorControl(
     val icon: String,
 ) {
-    Bold(icon = Res.Icon.bold),
-    Italic(icon = Res.Icon.italic),
-    Link(icon = Res.Icon.link),
-    Title(icon = Res.Icon.title),
-    Subtitle(icon = Res.Icon.subtitle),
-    Quote(icon = Res.Icon.quote),
-    Code(icon = Res.Icon.code),
-    Image(icon = Res.Icon.image)
+    Bold(icon = Res.Icon.BOLD),
+    Italic(icon = Res.Icon.ITALIC),
+    Link(icon = Res.Icon.LINK),
+    Title(icon = Res.Icon.TITLE),
+    Subtitle(icon = Res.Icon.SUBTITLE),
+    Quote(icon = Res.Icon.QUOTE),
+    Code(icon = Res.Icon.CODE),
+    Image(icon = Res.Icon.IMAGE)
 }

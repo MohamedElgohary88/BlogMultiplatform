@@ -112,7 +112,7 @@ private fun NavigationItems() {
         modifier = Modifier.margin(bottom = 24.px),
         title = "Home",
         selected = context.route.path == Screen.AdminHome.route,
-        icon = Res.PathIcon.home,
+        icon = Res.PathIcon.HOME,
         onClick = {
             context.router.navigateTo(Screen.AdminHome.route)
         }
@@ -121,7 +121,7 @@ private fun NavigationItems() {
         modifier = Modifier.margin(bottom = 24.px),
         selected = context.route.path == Screen.AdminCreate.route,
         title = "Create Post",
-        icon = Res.PathIcon.create,
+        icon = Res.PathIcon.CREATE,
         onClick = {
             context.router.navigateTo(Screen.AdminCreate.route)
         }
@@ -130,14 +130,14 @@ private fun NavigationItems() {
         modifier = Modifier.margin(bottom = 24.px),
         selected = context.route.path == Screen.AdminMyPosts.route,
         title = "My Posts",
-        icon = Res.PathIcon.posts,
+        icon = Res.PathIcon.POSTS,
         onClick = {
             context.router.navigateTo(Screen.AdminMyPosts.route)
         }
     )
     NavigationItem(
         title = "Logout",
-        icon = Res.PathIcon.logout,
+        icon = Res.PathIcon.LOGOUT,
         onClick = {
             logout()
             context.router.navigateTo(Screen.AdminLogin.route)
@@ -193,7 +193,7 @@ private fun NavigationItem(
         )
         SpanText(
             modifier = Modifier
-                .id(Id.navigationText)
+                .id(Id.NAVIGATION_TEXT)
                 .fontFamily(FONT_FAMILY)
                 .fontSize(16.px)
                 .thenIf(
@@ -213,7 +213,7 @@ private fun VectorIcon(
 ) {
     Svg(
         attrs = modifier
-            .id(Id.svgParent)
+            .id(Id.SVG_PARENT)
             .width(24.px)
             .height(24.px)
             .toAttrs {
@@ -223,7 +223,7 @@ private fun VectorIcon(
     ) {
         Path(
             attrs = Modifier
-                .id(Id.vectorIcon)
+                .id(Id.VECTOR_ICON)
                 .thenIf(
                     condition = selected,
                     other = Modifier.styleModifier {
