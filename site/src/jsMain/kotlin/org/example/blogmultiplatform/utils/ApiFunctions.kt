@@ -105,3 +105,16 @@ suspend fun fetchMyPosts(
         onError(e)
     }
 }
+
+suspend fun deleteSelectedPosts(ids: List<String>): Boolean {
+    return try {
+        val result = window.api.tryPost(
+            apiPath = "deleteselectedposts",
+            body = Json.encodeToString(ids).encodeToByteArray()
+        )?.decodeToString()
+        result.toBoolean()
+    } catch (e: Exception) {
+        println(e.message)
+        false
+    }
+}
