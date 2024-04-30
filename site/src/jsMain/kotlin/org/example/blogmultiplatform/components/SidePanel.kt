@@ -91,7 +91,7 @@ private fun SidePanelInternal() {
     ) {
         Image(
             modifier = Modifier.margin(bottom = 60.px),
-            src = Res.Image.logo,
+            src = Res.Image.LOGO,
             description = "Logo Image"
         )
         NavigationItems()
@@ -165,7 +165,7 @@ private fun CollapsedSidePanel(onMenuClick: () -> Unit) {
         )
         Image(
             modifier = Modifier.width(80.px),
-            src = Res.Image.logo,
+            src = Res.Image.LOGO,
             description = "Logo Image"
         )
     }
@@ -301,7 +301,7 @@ fun OverflowSidePanel(onMenuClose: () -> Unit) {
                 )
                 Image(
                     modifier = Modifier.width(80.px),
-                    src = Res.Image.logo,
+                    src = Res.Image.LOGO,
                     description = "Logo Image"
                 )
             }

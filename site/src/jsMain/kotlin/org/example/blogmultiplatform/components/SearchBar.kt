@@ -14,8 +14,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.height
+import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.onFocusIn
 import com.varabyte.kobweb.compose.ui.modifiers.onFocusOut
@@ -26,6 +28,7 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.icons.fa.FaMagnifyingGlass
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import org.example.blogmultiplatform.models.Theme
+import org.example.blogmultiplatform.utils.Id
 import org.example.blogmultiplatform.utils.noBorder
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.LineStyle
@@ -34,11 +37,13 @@ import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Input
 
 @Composable
-fun SearchBar(onEnterClick: () -> Unit) {
+fun SearchBar(
+    modifier: Modifier = Modifier,
+    onEnterClick: () -> Unit
+) {
     var focused by remember { mutableStateOf(false) }
-
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(left = 20.px)
             .height(54.px)
@@ -63,7 +68,8 @@ fun SearchBar(onEnterClick: () -> Unit) {
         Input(
             type = InputType.Text,
             attrs = Modifier
-                .fillMaxWidth()
+                .id(Id.ADMIN_SEARCH_BAR)
+                .fillMaxSize()
                 .color(Colors.Black)
                 .backgroundColor(Colors.Transparent)
                 .noBorder()

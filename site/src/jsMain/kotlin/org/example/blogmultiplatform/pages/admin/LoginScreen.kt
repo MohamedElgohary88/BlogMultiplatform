@@ -81,7 +81,7 @@ fun LoginScreen() {
                 modifier = Modifier
                     .margin(bottom = 50.px)
                     .width(100.px),
-                src = Res.Image.logo,
+                src = Res.Image.LOGO,
                 description = "Logo Image"
             )
             Input(

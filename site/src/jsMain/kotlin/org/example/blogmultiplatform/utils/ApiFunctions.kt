@@ -8,10 +8,12 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.example.blogmultiplatform.models.ApiListResponse
+import org.example.blogmultiplatform.models.ApiResponse
 import org.example.blogmultiplatform.models.Post
 import org.example.blogmultiplatform.models.RandomJoke
 import org.example.blogmultiplatform.models.User
 import org.example.blogmultiplatform.models.UserWithoutPassword
+import org.example.blogmultiplatform.utils.Id.POST_ID_PARAM
 import org.w3c.dom.get
 import org.w3c.dom.set
 import kotlin.js.Date
@@ -116,5 +118,36 @@ suspend fun deleteSelectedPosts(ids: List<String>): Boolean {
     } catch (e: Exception) {
         println(e.message)
         false
+    }
+}
+
+suspend fun searchPostsByTitle(
+    query: String,
+    skip: Int,
+    onSuccess: (ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+    try {
+        val result = window.api.tryGet(
+            apiPath = "searchposts?query=$query&skip=$skip"
+        )?.decodeToString()
+        onSuccess(Json.decodeFromString(result.toString()))
+    } catch (e: Exception) {
+        onError(e)
+    }
+}
+
+suspend fun fetchSelectedPost(id: String): ApiResponse {
+    return try {
+        val result = window.api.tryGet(
+            apiPath = "readselectedpost?${POST_ID_PARAM}=$id"
+        )?.decodeToString()
+        if (result != null) {
+            Json.decodeFromString<ApiResponse>(result)
+        } else {
+            ApiResponse.Error(message = "Result is null")
+        }
+    } catch (e: Exception) {
+        ApiResponse.Error(message = e.message.toString())
     }
 }

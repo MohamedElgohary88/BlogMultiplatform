@@ -8,7 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.TransitionProperty
 import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -29,14 +31,17 @@ import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Switch
 import com.varabyte.kobweb.silk.components.forms.SwitchSize
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
+import kotlinx.browser.document
 import kotlinx.coroutines.launch
 import org.example.blogmultiplatform.components.AdminPageLayout
 import org.example.blogmultiplatform.components.Posts
@@ -44,17 +49,23 @@ import org.example.blogmultiplatform.components.SearchBar
 import org.example.blogmultiplatform.models.ApiListResponse
 import org.example.blogmultiplatform.models.PostWithoutDetails
 import org.example.blogmultiplatform.models.Theme
+import org.example.blogmultiplatform.navigation.Screen
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
 import org.example.blogmultiplatform.utils.Constants.POSTS_PER_PAGE
 import org.example.blogmultiplatform.utils.Constants.SIDE_PANEL_WIDTH
+import org.example.blogmultiplatform.utils.Id
+import org.example.blogmultiplatform.utils.Id.QUERY_PARAM
 import org.example.blogmultiplatform.utils.deleteSelectedPosts
 import org.example.blogmultiplatform.utils.fetchMyPosts
 import org.example.blogmultiplatform.utils.isUserLoggedIn
 import org.example.blogmultiplatform.utils.noBorder
 import org.example.blogmultiplatform.utils.parseSwitchText
+import org.example.blogmultiplatform.utils.searchPostsByTitle
+import org.jetbrains.compose.web.css.ms
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Button
+import org.w3c.dom.HTMLInputElement
 
 @Page(routeOverride = "myposts")
 @Composable
@@ -66,30 +77,62 @@ fun MyPostsPage() {
 
 @Composable
 fun MyPostsScreen() {
+    val context = rememberPageContext()
     val breakpoint = rememberBreakpoint()
     val scope = rememberCoroutineScope()
     val selectedPosts = remember { mutableStateListOf<String>() }
     val myPosts = remember { mutableStateListOf<PostWithoutDetails>() }
+
     var postsToSkip by remember { mutableStateOf(0) }
     var showMoreVisibility by remember { mutableStateOf(false) }
-    var selectable by remember { mutableStateOf(false) }
+    var selectableMode by remember { mutableStateOf(false) }
     var switchText by remember { mutableStateOf("Select") }
 
-    LaunchedEffect(Unit) {
-        fetchMyPosts(
-            skip = postsToSkip,
-            onSuccess = {
-                if (it is ApiListResponse.Success) {
-                    myPosts.clear()
-                    myPosts.addAll(it.data)
-                    postsToSkip += POSTS_PER_PAGE
-                    showMoreVisibility = it.data.size >= POSTS_PER_PAGE
+    val hasParams = remember(key1 = context.route) { context.route.params.containsKey(QUERY_PARAM) }
+    val query = remember(key1 = context.route) {
+        try {
+            context.route.params.getValue(QUERY_PARAM)
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
+    LaunchedEffect(context.route) {
+        postsToSkip = 0
+        if (hasParams) {
+            (document.getElementById(Id.ADMIN_SEARCH_BAR) as HTMLInputElement).value =
+                query.replace("%20", " ")
+            searchPostsByTitle(
+                query = query,
+                skip = postsToSkip,
+                onSuccess = {
+                    if (it is ApiListResponse.Success) {
+                        myPosts.clear()
+                        myPosts.addAll(it.data)
+                        postsToSkip += POSTS_PER_PAGE
+                        showMoreVisibility = it.data.size >= POSTS_PER_PAGE
+                    }
+                },
+                onError = {
+                    println(it)
                 }
-            },
-            onError = {
-                println(it)
-            }
-        )
+            )
+        } else {
+            fetchMyPosts(
+                skip = postsToSkip,
+                onSuccess = {
+                    if (it is ApiListResponse.Success) {
+                        myPosts.clear()
+                        myPosts.addAll(it.data)
+                        postsToSkip += POSTS_PER_PAGE
+                        showMoreVisibility = it.data.size >= POSTS_PER_PAGE
+                    }
+                },
+                onError = {
+                    println(it)
+                }
+            )
+        }
     }
     AdminPageLayout {
         Column(
@@ -108,7 +151,24 @@ fun MyPostsScreen() {
                     ).margin(bottom = 24.px),
                 contentAlignment = Alignment.Center
             ) {
-                SearchBar(onEnterClick = {})
+                SearchBar(modifier = Modifier
+                    .visibility(if (selectableMode) Visibility.Hidden else Visibility.Visible)
+                    .transition(
+                        CSSTransition(
+                            property = TransitionProperty.All,
+                            duration = 200.ms
+                        )
+                    ),
+                    onEnterClick = {
+                        val searchInput =
+                            (document.getElementById(Id.ADMIN_SEARCH_BAR) as HTMLInputElement).value
+                        if (searchInput.isNotEmpty()) {
+                            context.router.navigateTo(Screen.AdminMyPosts.searchByTitle(query = searchInput))
+                        } else {
+                            context.router.navigateTo(Screen.AdminMyPosts.route)
+                        }
+                    }
+                )
             }
             Row(
                 modifier = Modifier
@@ -121,10 +181,10 @@ fun MyPostsScreen() {
                     Switch(
                         modifier = Modifier.margin(right = 8.px),
                         size = SwitchSize.LG,
-                        checked = selectable,
+                        checked = selectableMode,
                         onCheckedChange = {
-                            selectable = it
-                            if (!selectable) {
+                            selectableMode = it
+                            if (!selectableMode) {
                                 switchText = "Select"
                                 selectedPosts.clear()
                             } else {
@@ -133,7 +193,7 @@ fun MyPostsScreen() {
                         }
                     )
                     SpanText(
-                        modifier = Modifier.color(if (selectable) Colors.Black else Theme.HalfBlack.rgb),
+                        modifier = Modifier.color(if (selectableMode) Colors.Black else Theme.HalfBlack.rgb),
                         text = switchText
                     )
                 }
@@ -153,7 +213,7 @@ fun MyPostsScreen() {
                             scope.launch {
                                 val result = deleteSelectedPosts(ids = selectedPosts)
                                 if (result) {
-                                    selectable = false
+                                    selectableMode = false
                                     switchText = "Select"
                                     postsToSkip -= selectedPosts.size
                                     selectedPosts.forEach { deletedPostId ->
@@ -171,8 +231,9 @@ fun MyPostsScreen() {
                 }
             }
             Posts(
+                breakpoint = breakpoint,
                 posts = myPosts,
-                selectable = selectable,
+                selectableMode = selectableMode,
                 onSelect = {
                     selectedPosts.add(it)
                     switchText = parseSwitchText(selectedPosts.toList())
@@ -184,27 +245,48 @@ fun MyPostsScreen() {
                 showMoreVisibility = showMoreVisibility,
                 onShowMore = {
                     scope.launch {
-                        fetchMyPosts(
-                            skip = postsToSkip,
-                            onSuccess = {
-                                if (it is ApiListResponse.Success) {
-                                    if (it.data.isNotEmpty()) {
-                                        myPosts.addAll(it.data)
-                                        postsToSkip += POSTS_PER_PAGE
-                                        if (it.data.size < POSTS_PER_PAGE) showMoreVisibility =
-                                            false
-                                    } else {
-                                        showMoreVisibility = false
+                        if (hasParams) {
+                            searchPostsByTitle(
+                                query = query,
+                                skip = postsToSkip,
+                                onSuccess = {
+                                    if (it is ApiListResponse.Success) {
+                                        if (it.data.isNotEmpty()) {
+                                            myPosts.addAll(it.data)
+                                            postsToSkip += POSTS_PER_PAGE
+                                            if (it.data.size < POSTS_PER_PAGE) showMoreVisibility =
+                                                false
+                                        } else {
+                                            showMoreVisibility = false
+                                        }
                                     }
+                                },
+                                onError = {
+                                    println(it)
                                 }
-                            },
-                            onError = {
-                                println(it)
-                            }
-                        )
+                            )
+                        } else {
+                            fetchMyPosts(
+                                skip = postsToSkip,
+                                onSuccess = {
+                                    if (it is ApiListResponse.Success) {
+                                        if (it.data.isNotEmpty()) {
+                                            myPosts.addAll(it.data)
+                                            postsToSkip += POSTS_PER_PAGE
+                                            if (it.data.size < POSTS_PER_PAGE) showMoreVisibility =
+                                                false
+                                        } else {
+                                            showMoreVisibility = false
+                                        }
+                                    }
+                                },
+                                onError = {
+                                    println(it)
+                                }
+                            )
+                        }
                     }
-                },
-                breakpoint = breakpoint
+                }
             )
         }
     }

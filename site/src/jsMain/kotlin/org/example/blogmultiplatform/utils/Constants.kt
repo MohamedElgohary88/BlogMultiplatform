@@ -12,8 +12,8 @@ object Constants {
 
 object Res {
     object Image {
-        const val logo = "/logo.svg"
-        const val laugh = "/laugh.png"
+        const val LOGO = "/logo.svg"
+        const val LAUGH = "/laugh.png"
     }
     object Icon {
         const val BOLD = "/bold.svg"
@@ -51,4 +51,7 @@ object Id {
     const val THUMBNAIL_INPUT = "thumbnailInput"
     const val LINK_HREF_INPUT = "linkHrefInput"
     const val LINK_TITLE_INPUT = "linkTitleInput"
+    const val ADMIN_SEARCH_BAR = "adminSearchBar"
+    const val QUERY_PARAM = "query"
+    const val POST_ID_PARAM = "postId"
 }

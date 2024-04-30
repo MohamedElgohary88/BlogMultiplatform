@@ -1,6 +1,7 @@
 package org.example.blogmultiplatform.pages.admin
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,6 +54,7 @@ import org.example.blogmultiplatform.components.Editor
 import org.example.blogmultiplatform.components.EditorControls
 import org.example.blogmultiplatform.components.ControlPopup
 import org.example.blogmultiplatform.components.MessagePopup
+import org.example.blogmultiplatform.models.ApiResponse
 import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.ControlStyle
 import org.example.blogmultiplatform.models.EditorControl
@@ -62,8 +64,10 @@ import org.example.blogmultiplatform.navigation.Screen
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
 import org.example.blogmultiplatform.utils.Constants.SIDE_PANEL_WIDTH
 import org.example.blogmultiplatform.utils.Id
+import org.example.blogmultiplatform.utils.Id.POST_ID_PARAM
 import org.example.blogmultiplatform.utils.addPost
 import org.example.blogmultiplatform.utils.applyStyle
+import org.example.blogmultiplatform.utils.fetchSelectedPost
 import org.example.blogmultiplatform.utils.getSelectedText
 import org.example.blogmultiplatform.utils.isUserLoggedIn
 import org.example.blogmultiplatform.utils.noBorder
@@ -107,6 +111,20 @@ fun CreateScreen() {
     val context = rememberPageContext()
     val breakpoint = rememberBreakpoint()
     var uiState by remember { mutableStateOf(CreatePageUiState()) }
+
+    val hasPostIdParam = remember(key1 = context.route) {
+        context.route.params.containsKey(POST_ID_PARAM)
+    }
+
+    LaunchedEffect(hasPostIdParam) {
+        if(hasPostIdParam) {
+            val postId = context.route.params.getValue(POST_ID_PARAM)
+            val response = fetchSelectedPost(id = postId)
+            if(response is ApiResponse.Success) {
+
+            }
+        }
+    }
 
     AdminPageLayout {
         Box(

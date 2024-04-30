@@ -9,6 +9,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
 import org.example.blogmultiplatform.data.MongoDB
 import org.example.blogmultiplatform.models.ApiListResponse
+import org.example.blogmultiplatform.models.ApiResponse
 import org.example.blogmultiplatform.models.Post
 import org.litote.kmongo.id.ObjectIdGenerator
 
@@ -61,5 +62,49 @@ suspend fun deleteSelectedPosts(context: ApiContext) {
         )
     } catch (e: Exception) {
         context.res.setBodyText(Json.encodeToString(e.message))
+    }
+}
+
+@Api(routeOverride = "searchposts")
+suspend fun searchPostsByTitle(context: ApiContext) {
+    try {
+        val query = context.req.params["query"] ?: ""
+        val skip = context.req.params["skip"]?.toInt() ?: 0
+        val request = context.data.getValue<MongoDB>().searchPostsByTittle(
+            query = query,
+            skip = skip
+        )
+        context.res.setBodyText(
+            Json.encodeToString(
+                ApiListResponse.Success(
+                    data = request
+                )
+            )
+        )
+    } catch (e: Exception) {
+        context.res.setBodyText(
+            Json.encodeToString(ApiListResponse.Error(message = e.message.toString()))
+        )
+    }
+}
+
+@Api(routeOverride = "readselectedpost")
+suspend fun readSelectedPost(context: ApiContext) {
+    val postId = context.req.params["postId"]
+    if (!postId.isNullOrEmpty()) {
+        try {
+            val selectedPost = context.data.getValue<MongoDB>().readSelectedPost(id = postId)
+            context.res.setBodyText(
+                Json.encodeToString(ApiResponse.Success(data = selectedPost))
+            )
+        } catch (e: Exception) {
+            context.res.setBodyText(
+                Json.encodeToString(ApiResponse.Error(message = e.message.toString()))
+            )
+        }
+    } else {
+        context.res.setBodyText(
+            Json.encodeToString(ApiResponse.Error(message = "Selected Post does not exist."))
+        )
     }
 }

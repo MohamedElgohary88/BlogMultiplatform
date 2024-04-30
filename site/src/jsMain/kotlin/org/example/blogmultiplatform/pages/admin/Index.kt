@@ -100,7 +100,7 @@ fun HomeContent(randomJoke: RandomJoke?) {
                         modifier = Modifier
                             .size(150.px)
                             .margin(bottom = 50.px),
-                        src = Res.Image.laugh,
+                        src = Res.Image.LAUGH,
                         description = "Laugh Image"
                     )
                 }
