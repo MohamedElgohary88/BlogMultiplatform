@@ -9,11 +9,14 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.example.blogmultiplatform.models.ApiListResponse
 import org.example.blogmultiplatform.models.ApiResponse
+import org.example.blogmultiplatform.models.Constants.AUTHOR_PARAM
+import org.example.blogmultiplatform.models.Constants.POST_ID_PARAM
+import org.example.blogmultiplatform.models.Constants.QUERY_PARAM
+import org.example.blogmultiplatform.models.Constants.SKIP_PARAM
 import org.example.blogmultiplatform.models.Post
 import org.example.blogmultiplatform.models.RandomJoke
 import org.example.blogmultiplatform.models.User
 import org.example.blogmultiplatform.models.UserWithoutPassword
-import org.example.blogmultiplatform.utils.Id.POST_ID_PARAM
 import org.w3c.dom.get
 import org.w3c.dom.set
 import kotlin.js.Date
@@ -100,7 +103,7 @@ suspend fun fetchMyPosts(
 ) {
     try {
         val result = window.api.tryGet(
-            apiPath = "readmyposts?skip=$skip&author=${localStorage["username"]}"
+            apiPath = "readmyposts?${SKIP_PARAM}=$skip&${AUTHOR_PARAM}=${localStorage["username"]}"
         )?.decodeToString()
         onSuccess(Json.decodeFromString(result.toString()))
     } catch (e: Exception) {
@@ -129,7 +132,7 @@ suspend fun searchPostsByTitle(
 ) {
     try {
         val result = window.api.tryGet(
-            apiPath = "searchposts?query=$query&skip=$skip"
+            apiPath = "searchposts?${QUERY_PARAM}=$query&${SKIP_PARAM}=$skip"
         )?.decodeToString()
         onSuccess(Json.decodeFromString(result.toString()))
     } catch (e: Exception) {

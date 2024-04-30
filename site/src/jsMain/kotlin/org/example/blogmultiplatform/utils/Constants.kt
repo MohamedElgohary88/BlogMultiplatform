@@ -6,7 +6,6 @@ object Constants {
     const val SIDE_PANEL_WIDTH = 250
     const val PAGE_WIDTH = 1920
     const val COLLAPSED_PANEL_HEIGHT = 100
-    const val POSTS_PER_PAGE = 8
     const val HUMOR_API_URL = "https://api.humorapi.com/jokes/random?api-key=f0cac1365ead42e58b2ee94684b45b56&max-length=180"
 }
 
@@ -52,6 +51,4 @@ object Id {
     const val LINK_HREF_INPUT = "linkHrefInput"
     const val LINK_TITLE_INPUT = "linkTitleInput"
     const val ADMIN_SEARCH_BAR = "adminSearchBar"
-    const val QUERY_PARAM = "query"
-    const val POST_ID_PARAM = "postId"
 }

@@ -10,6 +10,9 @@ import kotlinx.serialization.encodeToString
 import org.example.blogmultiplatform.data.MongoDB
 import org.example.blogmultiplatform.models.ApiListResponse
 import org.example.blogmultiplatform.models.ApiResponse
+import org.example.blogmultiplatform.models.Constants.POST_ID_PARAM
+import org.example.blogmultiplatform.models.Constants.QUERY_PARAM
+import org.example.blogmultiplatform.models.Constants.SKIP_PARAM
 import org.example.blogmultiplatform.models.Post
 import org.litote.kmongo.id.ObjectIdGenerator
 
@@ -68,8 +71,8 @@ suspend fun deleteSelectedPosts(context: ApiContext) {
 @Api(routeOverride = "searchposts")
 suspend fun searchPostsByTitle(context: ApiContext) {
     try {
-        val query = context.req.params["query"] ?: ""
-        val skip = context.req.params["skip"]?.toInt() ?: 0
+        val query = context.req.params[QUERY_PARAM] ?: ""
+        val skip = context.req.params[SKIP_PARAM]?.toInt() ?: 0
         val request = context.data.getValue<MongoDB>().searchPostsByTittle(
             query = query,
             skip = skip
@@ -90,7 +93,7 @@ suspend fun searchPostsByTitle(context: ApiContext) {
 
 @Api(routeOverride = "readselectedpost")
 suspend fun readSelectedPost(context: ApiContext) {
-    val postId = context.req.params["postId"]
+    val postId = context.req.params[POST_ID_PARAM]
     if (!postId.isNullOrEmpty()) {
         try {
             val selectedPost = context.data.getValue<MongoDB>().readSelectedPost(id = postId)

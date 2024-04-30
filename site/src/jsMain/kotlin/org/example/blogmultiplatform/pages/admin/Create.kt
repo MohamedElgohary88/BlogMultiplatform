@@ -49,13 +49,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.example.blogmultiplatform.components.AdminPageLayout
 import org.example.blogmultiplatform.components.CategoryDropdown
+import org.example.blogmultiplatform.components.ControlPopup
 import org.example.blogmultiplatform.components.CreateButton
 import org.example.blogmultiplatform.components.Editor
 import org.example.blogmultiplatform.components.EditorControls
-import org.example.blogmultiplatform.components.ControlPopup
 import org.example.blogmultiplatform.components.MessagePopup
 import org.example.blogmultiplatform.models.ApiResponse
 import org.example.blogmultiplatform.models.Category
+import org.example.blogmultiplatform.models.Constants.POST_ID_PARAM
 import org.example.blogmultiplatform.models.ControlStyle
 import org.example.blogmultiplatform.models.EditorControl
 import org.example.blogmultiplatform.models.Post
@@ -64,7 +65,6 @@ import org.example.blogmultiplatform.navigation.Screen
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
 import org.example.blogmultiplatform.utils.Constants.SIDE_PANEL_WIDTH
 import org.example.blogmultiplatform.utils.Id
-import org.example.blogmultiplatform.utils.Id.POST_ID_PARAM
 import org.example.blogmultiplatform.utils.addPost
 import org.example.blogmultiplatform.utils.applyStyle
 import org.example.blogmultiplatform.utils.fetchSelectedPost
@@ -117,10 +117,10 @@ fun CreateScreen() {
     }
 
     LaunchedEffect(hasPostIdParam) {
-        if(hasPostIdParam) {
-            val postId = context.route.params.getValue(POST_ID_PARAM)
+        if (hasPostIdParam) {
+            val postId = context.route.params[POST_ID_PARAM] ?: ""
             val response = fetchSelectedPost(id = postId)
-            if(response is ApiResponse.Success) {
+            if (response is ApiResponse.Success) {
 
             }
         }

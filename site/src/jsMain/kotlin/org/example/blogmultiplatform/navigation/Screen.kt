@@ -1,7 +1,7 @@
 package org.example.blogmultiplatform.navigation
 
-import org.example.blogmultiplatform.utils.Id.POST_ID_PARAM
-import org.example.blogmultiplatform.utils.Id.QUERY_PARAM
+import org.example.blogmultiplatform.models.Constants.POST_ID_PARAM
+import org.example.blogmultiplatform.models.Constants.QUERY_PARAM
 
 sealed class Screen(val route: String) {
     object AdminHome : Screen(route = "/admin/home")
