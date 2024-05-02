@@ -24,9 +24,11 @@ import com.varabyte.kobweb.compose.ui.modifiers.onFocusOut
 import com.varabyte.kobweb.compose.ui.modifiers.onKeyDown
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.transition
+import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.icons.fa.FaMagnifyingGlass
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
+import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.utils.Id
 import org.example.blogmultiplatform.utils.noBorder
@@ -38,21 +40,32 @@ import org.jetbrains.compose.web.dom.Input
 
 @Composable
 fun SearchBar(
+    breakpoint: Breakpoint,
     modifier: Modifier = Modifier,
-    onEnterClick: () -> Unit
+    fullWidth: Boolean = true,
+    darkTheme: Boolean = false,
+    onEnterClick: () -> Unit,
+    onSearchIconClick: (Boolean) -> Unit
 ) {
     var focused by remember { mutableStateOf(false) }
     Row(
         modifier = modifier
-            .fillMaxWidth()
+            .thenIf(
+                condition = fullWidth,
+                other = Modifier.fillMaxWidth()
+            )
             .padding(left = 20.px)
             .height(54.px)
-            .backgroundColor(Theme.LightGray.rgb)
+            .backgroundColor(if (darkTheme) Theme.Tertiary.rgb else Theme.LightGray.rgb)
             .borderRadius(r = 100.px)
             .border(
                 width = 2.px,
                 style = LineStyle.Solid,
-                color = if (focused) Theme.Primary.rgb else Theme.LightGray.rgb
+                color = if (focused && !darkTheme) Theme.Primary.rgb
+                else if (focused && darkTheme) Theme.Primary.rgb
+                else if (!focused && !darkTheme) Theme.LightGray.rgb
+                else if (!focused && darkTheme) Theme.Secondary.rgb
+                else Theme.LightGray.rgb
             )
             .transition(CSSTransition(property = "border", duration = 200.ms)),
         verticalAlignment = Alignment.CenterVertically
@@ -70,7 +83,7 @@ fun SearchBar(
             attrs = Modifier
                 .id(Id.ADMIN_SEARCH_BAR)
                 .fillMaxSize()
-                .color(Colors.Black)
+                .color(if (darkTheme) Colors.White else Colors.Black)
                 .backgroundColor(Colors.Transparent)
                 .noBorder()
                 .onFocusIn { focused = true }

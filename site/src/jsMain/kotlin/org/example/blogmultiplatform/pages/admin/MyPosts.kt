@@ -145,7 +145,7 @@ fun MyPostsScreen() {
                     ).margin(bottom = 24.px),
                 contentAlignment = Alignment.Center
             ) {
-                SearchBar(modifier = Modifier
+                SearchBar(breakpoint = breakpoint, modifier = Modifier
                     .visibility(if (selectableMode) Visibility.Hidden else Visibility.Visible)
                     .transition(
                         CSSTransition(
@@ -161,7 +161,8 @@ fun MyPostsScreen() {
                         } else {
                             context.router.navigateTo(Screen.AdminMyPosts.route)
                         }
-                    }
+                    },
+                    onSearchIconClick = {}
                 )
             }
             Row(

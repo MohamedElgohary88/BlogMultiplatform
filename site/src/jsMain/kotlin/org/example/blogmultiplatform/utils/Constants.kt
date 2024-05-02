@@ -5,6 +5,7 @@ object Constants {
     const val FONT_FAMILY = "Roboto"
     const val SIDE_PANEL_WIDTH = 250
     const val PAGE_WIDTH = 1920
+    const val HEADER_HEIGHT = 100
     const val COLLAPSED_PANEL_HEIGHT = 100
     const val HUMOR_API_URL = "https://api.humorapi.com/jokes/random?api-key=f0cac1365ead42e58b2ee94684b45b56&max-length=180"
 }
@@ -12,6 +13,7 @@ object Constants {
 object Res {
     object Image {
         const val LOGO = "/logo.svg"
+        const val LOGO_HOME = "logo.svg"
         const val LAUGH = "/laugh.png"
     }
     object Icon {
