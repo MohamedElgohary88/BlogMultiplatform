@@ -18,6 +18,7 @@ import org.litote.kmongo.`in`
 import org.litote.kmongo.reactivestreams.KMongo
 import org.litote.kmongo.reactivestreams.getCollection
 import org.litote.kmongo.regex
+import org.litote.kmongo.setValue
 
 @InitApi
 fun initMongoDB(context: InitApiContext) {
@@ -46,6 +47,25 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
             .skip(skip)
             .limit(POSTS_PER_PAGE)
             .toList()
+    }
+
+    override suspend fun updatePost(post: Post): Boolean {
+        return postCollection
+            .updateOne(
+                Post::id eq post.id,
+                mutableListOf(
+                    setValue(Post::title, post.title),
+                    setValue(Post::subtitle, post.subtitle),
+                    setValue(Post::category, post.category),
+                    setValue(Post::thumbnail, post.thumbnail),
+                    setValue(Post::content, post.content),
+                    setValue(Post::main, post.main),
+                    setValue(Post::popular, post.popular),
+                    setValue(Post::sponsored, post.sponsored)
+                )
+            )
+            .awaitLast()
+            .wasAcknowledged()
     }
 
     override suspend fun deleteSelectedPosts(ids: List<String>): Boolean {
@@ -94,6 +114,4 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
             false
         }
     }
-
-
 }

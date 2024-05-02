@@ -21,7 +21,10 @@ import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Button
 
 @Composable
-fun CreateButton(onClick: () -> Unit) {
+fun CreateButton(
+    text: String,
+    onClick: () -> Unit
+) {
     Button(
         attrs = Modifier
             .onClick { onClick() }
@@ -36,6 +39,6 @@ fun CreateButton(onClick: () -> Unit) {
             .fontSize(16.px)
             .toAttrs()
     ) {
-        SpanText(text = "Create")
+        SpanText(text = text)
     }
 }

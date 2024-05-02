@@ -71,6 +71,7 @@ import org.example.blogmultiplatform.utils.fetchSelectedPost
 import org.example.blogmultiplatform.utils.getSelectedText
 import org.example.blogmultiplatform.utils.isUserLoggedIn
 import org.example.blogmultiplatform.utils.noBorder
+import org.example.blogmultiplatform.utils.updatePost
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Button
@@ -85,6 +86,7 @@ data class CreatePageUiState(
     var title: String = "",
     var subtitle: String = "",
     var thumbnail: String = "",
+    var buttonText: String = "Create",
     var thumbnailInputDisabled: Boolean = true,
     var content: String = "",
     var category: Category = Category.Programming,
@@ -95,7 +97,24 @@ data class CreatePageUiState(
     var messagePopup: Boolean = false,
     var linkPopup: Boolean = false,
     var imagePopup: Boolean = false
-)
+) {
+    fun reset() = this.copy(
+        id = "",
+        title = "",
+        subtitle = "",
+        thumbnail = "",
+        content = "",
+        category = Category.Programming,
+        buttonText = "Create",
+        main = false,
+        popular = false,
+        sponsored = false,
+        editorVisibility = true,
+        messagePopup = false,
+        linkPopup = false,
+        imagePopup = false
+    )
+}
 
 @Page
 @Composable
@@ -121,8 +140,24 @@ fun CreateScreen() {
             val postId = context.route.params[POST_ID_PARAM] ?: ""
             val response = fetchSelectedPost(id = postId)
             if (response is ApiResponse.Success) {
-
+                (document.getElementById(Id.EDITOR) as HTMLTextAreaElement).value =
+                    response.data.content
+                uiState = uiState.copy(
+                    id = response.data.id,
+                    title = response.data.title,
+                    subtitle = response.data.subtitle,
+                    content = response.data.content,
+                    category = response.data.category,
+                    thumbnail = response.data.thumbnail,
+                    buttonText = "Update",
+                    main = response.data.main,
+                    popular = response.data.popular,
+                    sponsored = response.data.sponsored
+                )
             }
+        } else {
+            (document.getElementById(Id.EDITOR) as HTMLTextAreaElement).value = ""
+            uiState = uiState.reset()
         }
     }
 
@@ -221,6 +256,7 @@ fun CreateScreen() {
                         .fontSize(16.px)
                         .toAttrs {
                             attr("placeholder", "Title")
+                            attr("value", uiState.title)
                         }
                 )
                 Input(
@@ -237,6 +273,7 @@ fun CreateScreen() {
                         .fontSize(16.px)
                         .toAttrs {
                             attr("placeholder", "Subtitle")
+                            attr("value", uiState.subtitle)
                         }
                 )
                 CategoryDropdown(
@@ -288,6 +325,7 @@ fun CreateScreen() {
                 )
                 Editor(editorVisibility = uiState.editorVisibility)
                 CreateButton(
+                    text = uiState.buttonText,
                     onClick = {
                         uiState =
                             uiState.copy(title = (document.getElementById(Id.TITLE_INPUT) as HTMLInputElement).value)
@@ -306,22 +344,41 @@ fun CreateScreen() {
                             uiState.content.isNotEmpty()
                         ) {
                             scope.launch {
-                                val result = addPost(
-                                    Post(
-                                        author = localStorage["username"].toString(),
-                                        title = uiState.title,
-                                        subtitle = uiState.subtitle,
-                                        date = Date.now().toLong(),
-                                        thumbnail = uiState.thumbnail,
-                                        content = uiState.content,
-                                        category = uiState.category,
-                                        popular = uiState.popular,
-                                        main = uiState.main,
-                                        sponsored = uiState.sponsored
+                                if (hasPostIdParam) {
+                                    val result = updatePost(
+                                        Post(
+                                            id = uiState.id,
+                                            title = uiState.title,
+                                            subtitle = uiState.subtitle,
+                                            thumbnail = uiState.thumbnail,
+                                            content = uiState.content,
+                                            category = uiState.category,
+                                            popular = uiState.popular,
+                                            main = uiState.main,
+                                            sponsored = uiState.sponsored
+                                        )
                                     )
-                                )
-                                if (result) {
-                                    context.router.navigateTo(Screen.AdminSuccess.route)
+                                    if (result) {
+                                        context.router.navigateTo(Screen.AdminSuccess.route)
+                                    } else {
+                                        val result = addPost(
+                                            Post(
+                                                author = localStorage["username"].toString(),
+                                                title = uiState.title,
+                                                subtitle = uiState.subtitle,
+                                                date = Date.now().toLong(),
+                                                thumbnail = uiState.thumbnail,
+                                                content = uiState.content,
+                                                category = uiState.category,
+                                                popular = uiState.popular,
+                                                main = uiState.main,
+                                                sponsored = uiState.sponsored
+                                            )
+                                        )
+                                        if (result) {
+                                            context.router.navigateTo(Screen.AdminSuccess.route)
+                                        }
+                                    }
                                 }
                             }
                         } else {

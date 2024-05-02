@@ -28,6 +28,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
+import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
@@ -56,6 +57,7 @@ import org.jetbrains.compose.web.css.ms
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.CheckboxInput
+import org.w3c.fetch.Request
 
 @Composable
 fun PostPreview(
@@ -97,6 +99,7 @@ fun PostPreview(
             modifier = Modifier
                 .margin(bottom = 16.px)
                 .fillMaxWidth()
+                .height(320.px)
                 .objectFit(ObjectFit.Cover),
             src = post.thumbnail,
             description = "Post Thumbnail Image"

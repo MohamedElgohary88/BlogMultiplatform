@@ -16,6 +16,7 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.text.SpanText
 import kotlinx.coroutines.delay
+import org.example.blogmultiplatform.models.Constants.UPDATED_PARAM
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.navigation.Screen
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
@@ -26,11 +27,12 @@ import org.jetbrains.compose.web.css.px
 @Composable
 fun SuccessPage() {
     val context = rememberPageContext()
+    val postUpdated = context.route.params.containsKey(UPDATED_PARAM)
+
     LaunchedEffect(Unit) {
         delay(2000)
         context.router.navigateTo(Screen.AdminCreate.route)
     }
-
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -45,7 +47,7 @@ fun SuccessPage() {
             modifier = Modifier
                 .fontFamily(FONT_FAMILY)
                 .fontSize(24.px),
-            text = "Post Successfully Created!"
+            text = if (postUpdated) "Post Successfully Updated!" else "Post Successfully Created!"
         )
         SpanText(
             modifier = Modifier

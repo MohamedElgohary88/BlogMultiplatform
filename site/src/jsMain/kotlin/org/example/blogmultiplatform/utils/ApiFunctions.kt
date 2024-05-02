@@ -23,14 +23,25 @@ import kotlin.js.Date
 
 suspend fun checkUserExistence(user: User): UserWithoutPassword? {
     return try {
-        val result = window.api.tryPost(
+        window.api.tryPost(
             apiPath = "usercheck",
             body = Json.encodeToString(user).encodeToByteArray()
-        )
-        result?.decodeToString()?.let { Json.decodeFromString<UserWithoutPassword>(it) }
+        )?.decodeToString().parseData()
     } catch (e: Exception) {
         println(e.message)
         null
+    }
+}
+
+suspend fun checkUserId(id: String): Boolean {
+    return try {
+        window.api.tryPost(
+            apiPath = "checkuserid",
+            body = Json.encodeToString(id).encodeToByteArray()
+        )?.decodeToString().parseData()
+    } catch (e: Exception) {
+        println(e.message.toString())
+        false
     }
 }
 
@@ -42,7 +53,7 @@ suspend fun fetchRandomJoke(onComplete: (RandomJoke) -> Unit) {
         if (dayHasPassed) {
             try {
                 val result = window.http.get(Constants.HUMOR_API_URL).decodeToString()
-                onComplete(Json.decodeFromString(result))
+                onComplete(result.parseData())
                 localStorage["date"] = Date.now().toString()
                 localStorage["joke"] = result
             } catch (e: Exception) {
@@ -51,8 +62,7 @@ suspend fun fetchRandomJoke(onComplete: (RandomJoke) -> Unit) {
             }
         } else {
             try {
-                localStorage["joke"]?.let { Json.decodeFromString<RandomJoke>(it) }
-                    ?.let { onComplete(it) }
+                localStorage["joke"]?.parseData<RandomJoke>()?.let { onComplete(it) }
             } catch (e: Exception) {
                 onComplete(RandomJoke(id = -1, joke = e.message.toString()))
                 println(e.message)
@@ -61,26 +71,13 @@ suspend fun fetchRandomJoke(onComplete: (RandomJoke) -> Unit) {
     } else {
         try {
             val result = window.http.get(Constants.HUMOR_API_URL).decodeToString()
-            onComplete(Json.decodeFromString(result))
+            onComplete(result.parseData())
             localStorage["date"] = Date.now().toString()
             localStorage["joke"] = result
         } catch (e: Exception) {
             onComplete(RandomJoke(id = -1, joke = e.message.toString()))
             println(e.message)
         }
-    }
-}
-
-suspend fun checkUserId(id: String): Boolean {
-    return try {
-        val result = window.api.tryPost(
-            apiPath = "checkuserid",
-            body = Json.encodeToString(id).encodeToByteArray()
-        )
-        result?.decodeToString()?.let { Json.decodeFromString<Boolean>(it) } ?: false
-    } catch (e: Exception) {
-        println(e.message.toString())
-        false
     }
 }
 
@@ -91,7 +88,7 @@ suspend fun addPost(post: Post): Boolean {
             body = Json.encodeToString(post).encodeToByteArray()
         )?.decodeToString().toBoolean()
     } catch (e: Exception) {
-        println(e.message.toString())
+        println(e.message)
         false
     }
 }
@@ -105,7 +102,7 @@ suspend fun fetchMyPosts(
         val result = window.api.tryGet(
             apiPath = "readmyposts?${SKIP_PARAM}=$skip&${AUTHOR_PARAM}=${localStorage["username"]}"
         )?.decodeToString()
-        onSuccess(Json.decodeFromString(result.toString()))
+        onSuccess(result.parseData())
     } catch (e: Exception) {
         onError(e)
     }
@@ -134,9 +131,21 @@ suspend fun searchPostsByTitle(
         val result = window.api.tryGet(
             apiPath = "searchposts?${QUERY_PARAM}=$query&${SKIP_PARAM}=$skip"
         )?.decodeToString()
-        onSuccess(Json.decodeFromString(result.toString()))
+        onSuccess(result.parseData())
     } catch (e: Exception) {
         onError(e)
+    }
+}
+
+suspend fun updatePost(post: Post): Boolean {
+    return try {
+        window.api.tryPost(
+            apiPath = "updatepost",
+            body = Json.encodeToString(post).encodeToByteArray()
+        )?.decodeToString().toBoolean()
+    } catch (e: Exception) {
+        println(e.message)
+        false
     }
 }
 
@@ -145,12 +154,12 @@ suspend fun fetchSelectedPost(id: String): ApiResponse {
         val result = window.api.tryGet(
             apiPath = "readselectedpost?${POST_ID_PARAM}=$id"
         )?.decodeToString()
-        if (result != null) {
-            Json.decodeFromString<ApiResponse>(result)
-        } else {
-            ApiResponse.Error(message = "Result is null")
-        }
+        result?.parseData() ?: ApiResponse.Error(message = "Result is null")
     } catch (e: Exception) {
         ApiResponse.Error(message = e.message.toString())
     }
+}
+
+inline fun <reified T> String?.parseData(): T {
+    return Json.decodeFromString(this.toString())
 }
