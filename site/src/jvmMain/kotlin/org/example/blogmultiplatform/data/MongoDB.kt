@@ -10,6 +10,7 @@ import org.example.blogmultiplatform.models.Post
 import org.example.blogmultiplatform.models.PostWithoutDetails
 import org.example.blogmultiplatform.models.User
 import org.example.blogmultiplatform.util.Constants.DATABASE_NAME
+import org.example.blogmultiplatform.util.Constants.MAIN_POSTS_LIMIT
 import org.litote.kmongo.and
 import org.litote.kmongo.coroutine.toList
 import org.litote.kmongo.descending
@@ -98,6 +99,15 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
             .sort(descending(PostWithoutDetails::date))
             .skip(skip)
             .limit(POSTS_PER_PAGE)
+            .toList()
+    }
+
+    override suspend fun readMainPosts(): List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::main eq true)
+            .sort(descending(PostWithoutDetails::date))
+            .limit(MAIN_POSTS_LIMIT)
             .toList()
     }
 

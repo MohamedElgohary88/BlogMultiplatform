@@ -19,16 +19,19 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.px
 
 @Composable
-fun CategoryChip(category: Category) {
+fun CategoryChip(
+    category: Category,
+    darkTheme: Boolean = false
+) {
     Box(
         modifier = Modifier
             .height(32.px)
             .padding(leftRight = 14.px)
             .borderRadius(r = 100.px)
             .border(
-                width = 1.px,
+                width = 2.px,
                 style = LineStyle.Solid,
-                color = Theme.HalfBlack.rgb
+                color = if(darkTheme) Theme.entries.find { it.hex == category.color }?.rgb else Theme.HalfBlack.rgb
             ),
         contentAlignment = Alignment.Center
     ) {
@@ -36,7 +39,10 @@ fun CategoryChip(category: Category) {
             modifier = Modifier
                 .fontFamily(FONT_FAMILY)
                 .fontSize(12.px)
-                .color(Theme.HalfBlack.rgb),
+                .color(
+                    if (darkTheme) Theme.entries.find { it.hex == category.color }?.rgb ?: Theme.HalfBlack.rgb
+                    else Theme.HalfBlack.rgb
+                ),
             text = category.name
         )
     }

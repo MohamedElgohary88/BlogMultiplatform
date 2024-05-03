@@ -12,12 +12,12 @@ import kotlinx.serialization.json.Json
 import org.example.blogmultiplatform.data.MongoDB
 import org.example.blogmultiplatform.models.ApiListResponse
 import org.example.blogmultiplatform.models.ApiResponse
+import org.example.blogmultiplatform.models.Constants.AUTHOR_PARAM
 import org.example.blogmultiplatform.models.Constants.POST_ID_PARAM
 import org.example.blogmultiplatform.models.Constants.QUERY_PARAM
 import org.example.blogmultiplatform.models.Constants.SKIP_PARAM
 import org.example.blogmultiplatform.models.Post
 import org.litote.kmongo.id.ObjectIdGenerator
-
 
 @Api(routeOverride = "addpost")
 suspend fun addPost(context: ApiContext) {
@@ -51,13 +51,23 @@ suspend fun updatePost(context: ApiContext) {
 @Api(routeOverride = "readmyposts")
 suspend fun readMyPosts(context: ApiContext) {
     try {
-        val skip = context.req.params["skip"]?.toInt() ?: 0
-        val author = context.req.params["author"] ?: ""
+        val skip = context.req.params[SKIP_PARAM]?.toInt() ?: 0
+        val author = context.req.params[AUTHOR_PARAM] ?: ""
         val myPosts = context.data.getValue<MongoDB>().readMyPosts(
             skip = skip,
             author = author
         )
         context.res.setBody(ApiListResponse.Success(data = myPosts))
+    } catch (e: Exception) {
+        context.res.setBody(ApiListResponse.Error(message = e.message.toString()))
+    }
+}
+
+@Api(routeOverride = "readmainposts")
+suspend fun readMainPosts(context: ApiContext) {
+    try {
+        val mainPosts = context.data.getValue<MongoDB>().readMainPosts()
+        context.res.setBody(ApiListResponse.Success(data = mainPosts))
     } catch (e: Exception) {
         context.res.setBody(ApiListResponse.Error(message = e.message.toString()))
     }

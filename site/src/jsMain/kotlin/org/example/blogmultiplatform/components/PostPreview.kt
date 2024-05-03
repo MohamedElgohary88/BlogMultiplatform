@@ -62,13 +62,13 @@ import org.w3c.fetch.Request
 @Composable
 fun PostPreview(
     post: PostWithoutDetails,
-    selectableMode: Boolean,
-    onSelect: (String) -> Unit,
-    onDeselect: (String) -> Unit,
+    selectableMode: Boolean = false,
+    darkTheme: Boolean = false,
+    onSelect: (String) -> Unit = {},
+    onDeselect: (String) -> Unit = {},
 ) {
-    var checked by remember(selectableMode) { mutableStateOf(false) }
     val context = rememberPageContext()
-
+    var checked by remember(selectableMode) { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxWidth(95.percent)
@@ -98,8 +98,8 @@ fun PostPreview(
         Image(
             modifier = Modifier
                 .margin(bottom = 16.px)
-                .fillMaxWidth()
                 .height(320.px)
+                .fillMaxWidth()
                 .objectFit(ObjectFit.Cover),
             src = post.thumbnail,
             description = "Post Thumbnail Image"
@@ -108,7 +108,7 @@ fun PostPreview(
             modifier = Modifier
                 .fontFamily(FONT_FAMILY)
                 .fontSize(12.px)
-                .color(Theme.HalfBlack.rgb),
+                .color(if (darkTheme) Theme.HalfWhite.rgb else Theme.HalfBlack.rgb),
             text = post.date.parseDateString()
         )
         SpanText(
@@ -117,13 +117,13 @@ fun PostPreview(
                 .fontFamily(FONT_FAMILY)
                 .fontSize(20.px)
                 .fontWeight(FontWeight.Bold)
-                .color(Colors.Black)
+                .color(if (darkTheme) Colors.White else Colors.Black)
                 .textOverflow(TextOverflow.Ellipsis)
                 .overflow(Overflow.Hidden)
                 .styleModifier {
                     property("display", "-webkit-box")
-                    property("-webkit-line-clamp", "3")
-                    property("line-clamp", "3")
+                    property("-webkit-line-clamp", "2")
+                    property("line-clamp", "2")
                     property("-webkit-box-orient", "vertical")
                 },
             text = post.title
@@ -133,13 +133,13 @@ fun PostPreview(
                 .margin(bottom = 8.px)
                 .fontFamily(FONT_FAMILY)
                 .fontSize(16.px)
-                .color(Colors.Black)
+                .color(if (darkTheme) Colors.White else Colors.Black)
                 .textOverflow(TextOverflow.Ellipsis)
                 .overflow(Overflow.Hidden)
                 .styleModifier {
                     property("display", "-webkit-box")
-                    property("-webkit-line-clamp", "2")
-                    property("line-clamp", "2")
+                    property("-webkit-line-clamp", "3")
+                    property("line-clamp", "3")
                     property("-webkit-box-orient", "vertical")
                 },
             text = post.subtitle
@@ -149,7 +149,7 @@ fun PostPreview(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CategoryChip(category = post.category)
+            CategoryChip(category = post.category, darkTheme = darkTheme)
             if (selectableMode) {
                 CheckboxInput(
                     checked = checked,
@@ -170,7 +170,7 @@ fun Posts(
     onSelect: (String) -> Unit,
     onDeselect: (String) -> Unit,
     showMoreVisibility: Boolean,
-    onShowMore: () -> Unit,
+    onShowMore: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(
