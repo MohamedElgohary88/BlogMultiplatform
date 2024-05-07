@@ -12,6 +12,7 @@ interface MongoRepository {
     suspend fun checkUserExistence(user: User): User?
     suspend fun searchPostsByTittle(query: String, skip: Int): List<PostWithoutDetails>
     suspend fun readSelectedPost(id: String): Post
+    suspend fun readLatestPosts(skip: Int): List<PostWithoutDetails>
     suspend fun readMainPosts(): List<PostWithoutDetails>
     suspend fun checkUserId(id: String): Boolean
 }

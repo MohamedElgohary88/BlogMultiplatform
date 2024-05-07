@@ -249,8 +249,7 @@ fun MyPostsScreen() {
                                         if (it.data.isNotEmpty()) {
                                             myPosts.addAll(it.data)
                                             postsToSkip += POSTS_PER_PAGE
-                                            if (it.data.size < POSTS_PER_PAGE) showMoreVisibility =
-                                                false
+                                            showMoreVisibility = it.data.size >= POSTS_PER_PAGE
                                         } else {
                                             showMoreVisibility = false
                                         }
@@ -268,8 +267,7 @@ fun MyPostsScreen() {
                                         if (it.data.isNotEmpty()) {
                                             myPosts.addAll(it.data)
                                             postsToSkip += POSTS_PER_PAGE
-                                            if (it.data.size < POSTS_PER_PAGE) showMoreVisibility =
-                                                false
+                                            showMoreVisibility = it.data.size >= POSTS_PER_PAGE
                                         } else {
                                             showMoreVisibility = false
                                         }

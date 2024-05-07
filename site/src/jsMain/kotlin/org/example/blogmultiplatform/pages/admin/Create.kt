@@ -358,7 +358,7 @@ fun CreateScreen() {
                                             sponsored = uiState.sponsored
                                         )
                                     )
-                                    if (!result) {
+                                    if (result) {
                                         context.router.navigateTo(Screen.AdminSuccess.route)
                                     } else {
                                         val result = addPost(

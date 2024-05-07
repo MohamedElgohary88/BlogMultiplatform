@@ -115,6 +115,22 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
         return postCollection.find(Post::id eq id).toList().first()
     }
 
+    override suspend fun readLatestPosts(skip: Int): List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(
+                and(
+                    PostWithoutDetails::popular eq false,
+                    PostWithoutDetails::main eq false,
+                    PostWithoutDetails::sponsored eq false
+                )
+            )
+            .sort(descending(PostWithoutDetails::date))
+            .skip(skip)
+            .limit(POSTS_PER_PAGE)
+            .toList()
+    }
+
     override suspend fun checkUserId(id: String): Boolean {
         return try {
             val documentCount = userCollection.countDocuments(User::id eq id).awaitFirst()

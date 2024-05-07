@@ -147,6 +147,20 @@ suspend fun deleteSelectedPosts(ids: List<String>): Boolean {
     }
 }
 
+suspend fun fetchLatestPosts(
+    skip: Int,
+    onSuccess: (ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+    try {
+        val result = window.api.tryGet(apiPath = "readlatestposts?${SKIP_PARAM}=$skip")?.decodeToString()
+        onSuccess(result.parseData())
+    } catch (e: Exception) {
+        println(e)
+        onError(e)
+    }
+}
+
 suspend fun searchPostsByTitle(
     query: String,
     skip: Int,

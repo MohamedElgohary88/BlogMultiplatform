@@ -18,6 +18,7 @@ import org.example.blogmultiplatform.components.OverflowSidePanel
 import org.example.blogmultiplatform.models.ApiListResponse
 import org.example.blogmultiplatform.sections.HeaderSection
 import org.example.blogmultiplatform.sections.MainSection
+import org.example.blogmultiplatform.utils.fetchLatestPosts
 import org.example.blogmultiplatform.utils.fetchMainPosts
 
 @Page
@@ -26,11 +27,23 @@ fun HomePage() {
     val breakpoint = rememberBreakpoint()
     var overflowOpened by remember { mutableStateOf(false) }
     var mainPosts by remember { mutableStateOf<ApiListResponse>(ApiListResponse.Idle) }
+    var latestPosts by remember { mutableStateOf<ApiListResponse>(ApiListResponse.Idle) }
+    val latestPostsToSkip by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
         fetchMainPosts(
             onSuccess = { mainPosts = it },
             onError = {}
+        )
+        fetchLatestPosts(
+            skip = latestPostsToSkip,
+            onSuccess = {
+                latestPosts = it
+                println(it)
+            },
+            onError = {
+                println(it)
+            }
         )
     }
 
