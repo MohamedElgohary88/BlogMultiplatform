@@ -33,6 +33,19 @@ suspend fun checkUserExistence(user: User): UserWithoutPassword? {
     }
 }
 
+suspend fun fetchSponsoredPosts(
+    onSuccess: (ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+    try {
+        val result = window.api.tryGet(apiPath = "readsponsoredposts")?.decodeToString()
+        onSuccess(result.parseData())
+    } catch (e: Exception) {
+        println(e)
+        onError(e)
+    }
+}
+
 suspend fun checkUserId(id: String): Boolean {
     return try {
         window.api.tryPost(

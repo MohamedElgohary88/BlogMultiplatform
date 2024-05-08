@@ -24,8 +24,10 @@ import org.example.blogmultiplatform.models.PostWithoutDetails
 import org.example.blogmultiplatform.sections.HeaderSection
 import org.example.blogmultiplatform.sections.MainSection
 import org.example.blogmultiplatform.sections.PostsSection
+import org.example.blogmultiplatform.sections.SponsoredPostsSection
 import org.example.blogmultiplatform.utils.fetchLatestPosts
 import org.example.blogmultiplatform.utils.fetchMainPosts
+import org.example.blogmultiplatform.utils.fetchSponsoredPosts
 
 @Page
 @Composable
@@ -34,6 +36,7 @@ fun HomePage() {
     val breakpoint = rememberBreakpoint()
     var overflowOpened by remember { mutableStateOf(false) }
     var mainPosts by remember { mutableStateOf<ApiListResponse>(ApiListResponse.Idle) }
+    val sponsoredPosts = remember { mutableStateListOf<PostWithoutDetails>() }
     val latestPosts = remember { mutableStateListOf<PostWithoutDetails>() }
     var latestPostsToSkip by remember { mutableStateOf(0) }
     var showMoreLatest by remember { mutableStateOf(false) }
@@ -45,11 +48,19 @@ fun HomePage() {
         )
         fetchLatestPosts(
             skip = latestPostsToSkip,
-            onSuccess = {
-                if (it is ApiListResponse.Success) {
-                    latestPosts.addAll(it.data)
+            onSuccess = { response ->
+                if (response is ApiListResponse.Success) {
+                    latestPosts.addAll(response.data)
                     latestPostsToSkip += POSTS_PER_PAGE
-                    if (it.data.size >= POSTS_PER_PAGE) showMoreLatest = true
+                    if (response.data.size >= POSTS_PER_PAGE) showMoreLatest = true
+                }
+            },
+            onError = {}
+        )
+        fetchSponsoredPosts(
+            onSuccess = { response ->
+                if (response is ApiListResponse.Success) {
+                    sponsoredPosts.addAll(response.data)
                 }
             },
             onError = {}
@@ -98,6 +109,11 @@ fun HomePage() {
                     )
                 }
             },
+            onClick = {}
+        )
+        SponsoredPostsSection(
+            breakpoint = breakpoint,
+            posts = sponsoredPosts,
             onClick = {}
         )
     }

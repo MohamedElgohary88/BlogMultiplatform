@@ -10,10 +10,8 @@ import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.ObjectFit
 import com.varabyte.kobweb.compose.css.Overflow
-import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.TextOverflow
 import com.varabyte.kobweb.compose.css.TransitionProperty
-import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -35,24 +33,20 @@ import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.size
-import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.modifiers.textOverflow
 import com.varabyte.kobweb.compose.ui.modifiers.transition
-import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.layout.SimpleGrid
-import com.varabyte.kobweb.silk.components.layout.numColumns
-import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
 import org.example.blogmultiplatform.models.PostWithoutDetails
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.navigation.Screen
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
 import org.example.blogmultiplatform.utils.parseDateString
+import org.jetbrains.compose.web.css.CSSColorValue
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.LineStyle
@@ -70,6 +64,7 @@ fun PostPreview(
     vertical: Boolean = true,
     thumbnailHeight: CSSSizeValue<CSSUnit.px> = 320.px,
     titleMaxLines: Int = 2,
+    titleColor: CSSColorValue = Colors.Black,
     onSelect: (String) -> Unit = {},
     onDeselect: (String) -> Unit = {},
     onClick: (String) -> Unit
@@ -79,7 +74,7 @@ fun PostPreview(
     if (vertical) {
         Column(
             modifier = modifier
-                .fillMaxWidth(if(darkTheme) 100.percent else 95.percent)
+                .fillMaxWidth(if (darkTheme) 100.percent else 95.percent)
                 .margin(bottom = 24.px)
                 .padding(all = if (selectableMode) 10.px else 0.px)
                 .borderRadius(r = 4.px)
@@ -109,18 +104,23 @@ fun PostPreview(
                 selectableMode = selectableMode,
                 darkTheme = darkTheme,
                 vertical = vertical,
+                titleColor = titleColor,
                 thumbnailHeight = thumbnailHeight,
                 titleMaxLines = titleMaxLines,
                 checked = checked
             )
         }
     } else {
-        Row(modifier = modifier.cursor(Cursor.Pointer)) {
+        Row(modifier = modifier
+            .onClick { onClick(post.id) }
+            .cursor(Cursor.Pointer)
+        ) {
             PostContent(
                 post = post,
                 selectableMode = selectableMode,
                 darkTheme = darkTheme,
                 vertical = vertical,
+                titleColor = titleColor,
                 thumbnailHeight = thumbnailHeight,
                 titleMaxLines = titleMaxLines,
                 checked = checked
@@ -135,6 +135,7 @@ fun PostContent(
     selectableMode: Boolean,
     darkTheme: Boolean,
     vertical: Boolean,
+    titleColor: CSSColorValue = Colors.Black,
     thumbnailHeight: CSSSizeValue<CSSUnit.px>,
     titleMaxLines: Int,
     checked: Boolean
@@ -168,7 +169,7 @@ fun PostContent(
                 .fontFamily(FONT_FAMILY)
                 .fontSize(20.px)
                 .fontWeight(FontWeight.Bold)
-                .color(if (darkTheme) Colors.White else Colors.Black)
+                .color(if (darkTheme) Colors.White else titleColor)
                 .textOverflow(TextOverflow.Ellipsis)
                 .overflow(Overflow.Hidden)
                 .styleModifier {
