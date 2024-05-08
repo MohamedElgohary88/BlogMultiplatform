@@ -86,10 +86,10 @@ data class CreatePageUiState(
     var title: String = "",
     var subtitle: String = "",
     var thumbnail: String = "",
-    var buttonText: String = "Create",
     var thumbnailInputDisabled: Boolean = true,
     var content: String = "",
     var category: Category = Category.Programming,
+    var buttonText: String = "Create",
     var popular: Boolean = false,
     var main: Boolean = false,
     var sponsored: Boolean = false,
@@ -359,25 +359,25 @@ fun CreateScreen() {
                                         )
                                     )
                                     if (result) {
-                                        context.router.navigateTo(Screen.AdminSuccess.route)
-                                    } else {
-                                        val result = addPost(
-                                            Post(
-                                                author = localStorage["username"].toString(),
-                                                title = uiState.title,
-                                                subtitle = uiState.subtitle,
-                                                date = Date.now().toLong(),
-                                                thumbnail = uiState.thumbnail,
-                                                content = uiState.content,
-                                                category = uiState.category,
-                                                popular = uiState.popular,
-                                                main = uiState.main,
-                                                sponsored = uiState.sponsored
-                                            )
+                                        context.router.navigateTo(Screen.AdminSuccess.postUpdated())
+                                    }
+                                } else {
+                                    val result = addPost(
+                                        Post(
+                                            author = localStorage["username"].toString(),
+                                            title = uiState.title,
+                                            subtitle = uiState.subtitle,
+                                            date = Date.now().toLong(),
+                                            thumbnail = uiState.thumbnail,
+                                            content = uiState.content,
+                                            category = uiState.category,
+                                            popular = uiState.popular,
+                                            main = uiState.main,
+                                            sponsored = uiState.sponsored
                                         )
-                                        if (result) {
-                                            context.router.navigateTo(Screen.AdminSuccess.route)
-                                        }
+                                    )
+                                    if (result) {
+                                        context.router.navigateTo(Screen.AdminSuccess.route)
                                     }
                                 }
                             }

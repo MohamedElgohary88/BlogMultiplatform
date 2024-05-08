@@ -44,7 +44,7 @@ import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.browser.document
 import kotlinx.coroutines.launch
 import org.example.blogmultiplatform.components.AdminPageLayout
-import org.example.blogmultiplatform.components.Posts
+import org.example.blogmultiplatform.components.PostsView
 import org.example.blogmultiplatform.components.SearchBar
 import org.example.blogmultiplatform.models.ApiListResponse
 import org.example.blogmultiplatform.models.Constants.POSTS_PER_PAGE
@@ -225,7 +225,7 @@ fun MyPostsScreen() {
                     SpanText(text = "Delete")
                 }
             }
-            Posts(
+            PostsView(
                 breakpoint = breakpoint,
                 posts = myPosts,
                 selectableMode = selectableMode,
@@ -279,7 +279,8 @@ fun MyPostsScreen() {
                             )
                         }
                     }
-                }
+                },
+                onClick = { context.router.navigateTo(Screen.AdminCreate.passPostId(id = it)) }
             )
         }
     }

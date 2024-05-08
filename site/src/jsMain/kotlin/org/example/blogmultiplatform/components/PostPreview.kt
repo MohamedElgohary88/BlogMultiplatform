@@ -72,6 +72,7 @@ fun PostPreview(
     titleMaxLines: Int = 2,
     onSelect: (String) -> Unit = {},
     onDeselect: (String) -> Unit = {},
+    onClick: (String) -> Unit
 ) {
     val context = rememberPageContext()
     var checked by remember(selectableMode) { mutableStateOf(false) }
@@ -97,6 +98,7 @@ fun PostPreview(
                         }
                     } else {
                         context.router.navigateTo(Screen.AdminCreate.passPostId(id = post.id))
+                        onClick(post.id)
                     }
                 }
                 .transition(CSSTransition(property = TransitionProperty.All, duration = 200.ms))
@@ -208,51 +210,5 @@ fun PostContent(
                 )
             }
         }
-    }
-}
-
-@Composable
-fun Posts(
-    breakpoint: Breakpoint,
-    posts: List<PostWithoutDetails>,
-    selectableMode: Boolean = false,
-    onSelect: (String) -> Unit,
-    onDeselect: (String) -> Unit,
-    showMoreVisibility: Boolean,
-    onShowMore: () -> Unit
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(
-            if (breakpoint > Breakpoint.MD) 80.percent
-            else 90.percent
-        ),
-        verticalArrangement = Arrangement.Center
-    ) {
-        SimpleGrid(
-            modifier = Modifier.fillMaxWidth(),
-            numColumns = numColumns(base = 1, sm = 2, md = 3, lg = 4)
-        ) {
-            posts.forEach {
-                PostPreview(
-                    post = it,
-                    selectableMode = selectableMode,
-                    onSelect = onSelect,
-                    onDeselect = onDeselect
-                )
-            }
-        }
-        SpanText(
-            modifier = Modifier
-                .fillMaxWidth()
-                .margin(topBottom = 50.px)
-                .textAlign(TextAlign.Center)
-                .fontFamily(FONT_FAMILY)
-                .fontSize(16.px)
-                .fontWeight(FontWeight.Medium)
-                .cursor(Cursor.Pointer)
-                .visibility(if (showMoreVisibility) Visibility.Visible else Visibility.Hidden)
-                .onClick { onShowMore() },
-            text = "Show more"
-        )
     }
 }
