@@ -1,6 +1,7 @@
 package org.example.blogmultiplatform.sections
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.browser.api
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -22,11 +23,15 @@ import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
+import kotlinx.browser.window
 import org.example.blogmultiplatform.components.PostPreview
+import org.example.blogmultiplatform.models.ApiListResponse
+import org.example.blogmultiplatform.models.Constants.SKIP_PARAM
 import org.example.blogmultiplatform.models.PostWithoutDetails
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
 import org.example.blogmultiplatform.utils.Constants.PAGE_WIDTH
+import org.example.blogmultiplatform.utils.parseData
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 
@@ -92,10 +97,11 @@ fun SponsoredPosts(
         }
         SimpleGrid(
             modifier = Modifier.fillMaxWidth(),
-            numColumns = numColumns(base = 1, lg = 2)
+            numColumns = numColumns(base = 1, xl = 2)
         ) {
             posts.forEach { post ->
                 PostPreview(
+                    modifier = Modifier.margin(right = 50.px),
                     post = post,
                     vertical = breakpoint < Breakpoint.MD,
                     titleMaxLines = 1,

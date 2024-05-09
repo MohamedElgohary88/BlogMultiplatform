@@ -6,6 +6,7 @@ import com.varabyte.kobweb.api.init.InitApiContext
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitLast
 import org.example.blogmultiplatform.models.Constants.POSTS_PER_PAGE
+import org.example.blogmultiplatform.models.Newsletter
 import org.example.blogmultiplatform.models.Post
 import org.example.blogmultiplatform.models.PostWithoutDetails
 import org.example.blogmultiplatform.models.User
@@ -34,6 +35,7 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
     private val client = KMongo.createClient()
     private val database = client.getDatabase(DATABASE_NAME)
     private val userCollection = database.getCollection<User>()
+    private val newsletterCollection = database.getCollection<Newsletter>()
     private val postCollection = database.getCollection<Post>()
 
     override suspend fun addPost(post: Post): Boolean {
@@ -48,6 +50,22 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
             .skip(skip)
             .limit(POSTS_PER_PAGE)
             .toList()
+    }
+
+    override suspend fun subscribe(newsletter: Newsletter): String {
+        val result = newsletterCollection
+            .find(Newsletter::email eq newsletter.email)
+            .toList()
+        return if (result.isNotEmpty()) {
+            "You're already subscribed."
+        } else {
+            val newEmail = newsletterCollection
+                .insertOne(newsletter)
+                .awaitFirst()
+                .wasAcknowledged()
+            if (newEmail) "Successfully Subscribed!"
+            else "Something went wrong. Please try again later."
+        }
     }
 
     override suspend fun updatePost(post: Post): Boolean {
@@ -108,6 +126,16 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
             .find(PostWithoutDetails::sponsored eq true)
             .sort(descending(PostWithoutDetails::date))
             .limit(2)
+            .toList()
+    }
+
+    override suspend fun readPopularPosts(skip: Int): List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::popular eq true)
+            .sort(descending(PostWithoutDetails::date))
+            .skip(skip)
+            .limit(POSTS_PER_PAGE)
             .toList()
     }
 

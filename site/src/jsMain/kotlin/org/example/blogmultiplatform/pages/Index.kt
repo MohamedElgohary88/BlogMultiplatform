@@ -23,10 +23,12 @@ import org.example.blogmultiplatform.models.Constants.POSTS_PER_PAGE
 import org.example.blogmultiplatform.models.PostWithoutDetails
 import org.example.blogmultiplatform.sections.HeaderSection
 import org.example.blogmultiplatform.sections.MainSection
+import org.example.blogmultiplatform.sections.NewsletterSection
 import org.example.blogmultiplatform.sections.PostsSection
 import org.example.blogmultiplatform.sections.SponsoredPostsSection
 import org.example.blogmultiplatform.utils.fetchLatestPosts
 import org.example.blogmultiplatform.utils.fetchMainPosts
+import org.example.blogmultiplatform.utils.fetchPopularPosts
 import org.example.blogmultiplatform.utils.fetchSponsoredPosts
 
 @Page
@@ -37,6 +39,9 @@ fun HomePage() {
     var overflowOpened by remember { mutableStateOf(false) }
     var mainPosts by remember { mutableStateOf<ApiListResponse>(ApiListResponse.Idle) }
     val sponsoredPosts = remember { mutableStateListOf<PostWithoutDetails>() }
+    var showMorePopular by remember { mutableStateOf(false) }
+    var popularPostsToSkip by remember { mutableStateOf(0) }
+    val popularPosts = remember { mutableStateListOf<PostWithoutDetails>() }
     val latestPosts = remember { mutableStateListOf<PostWithoutDetails>() }
     var latestPostsToSkip by remember { mutableStateOf(0) }
     var showMoreLatest by remember { mutableStateOf(false) }
@@ -65,6 +70,17 @@ fun HomePage() {
             },
             onError = {}
         )
+        fetchPopularPosts(
+            skip = popularPostsToSkip,
+            onSuccess = { response ->
+                if (response is ApiListResponse.Success) {
+                    popularPosts.addAll(response.data)
+                    popularPostsToSkip += POSTS_PER_PAGE
+                    if (response.data.size >= POSTS_PER_PAGE) showMorePopular = true
+                }
+            },
+            onError = {}
+        )
     }
 
     Column(
@@ -85,23 +101,23 @@ fun HomePage() {
         MainSection(breakpoint = breakpoint, posts = mainPosts)
         PostsSection(
             breakpoint = breakpoint,
-            posts = latestPosts,
-            title = "Latest Posts",
-            showMoreVisibility = showMoreLatest,
+            posts = popularPosts,
+            title = "Popular Posts",
+            showMoreVisibility = showMorePopular,
             onShowMore = {
                 scope.launch {
-                    fetchLatestPosts(
-                        skip = latestPostsToSkip,
+                    fetchPopularPosts(
+                        skip = popularPostsToSkip,
                         onSuccess = { response ->
                             if (response is ApiListResponse.Success) {
                                 if (response.data.isNotEmpty()) {
                                     if (response.data.size < POSTS_PER_PAGE) {
-                                        showMoreLatest = false
+                                        showMorePopular = false
                                     }
-                                    latestPosts.addAll(response.data)
-                                    latestPostsToSkip += POSTS_PER_PAGE
+                                    popularPosts.addAll(response.data)
+                                    popularPostsToSkip += POSTS_PER_PAGE
                                 } else {
-                                    showMoreLatest = false
+                                    showMorePopular = false
                                 }
                             }
                         },
@@ -116,5 +132,6 @@ fun HomePage() {
             posts = sponsoredPosts,
             onClick = {}
         )
+        NewsletterSection(breakpoint = breakpoint)
     }
 }

@@ -13,6 +13,7 @@ import org.example.blogmultiplatform.models.Constants.AUTHOR_PARAM
 import org.example.blogmultiplatform.models.Constants.POST_ID_PARAM
 import org.example.blogmultiplatform.models.Constants.QUERY_PARAM
 import org.example.blogmultiplatform.models.Constants.SKIP_PARAM
+import org.example.blogmultiplatform.models.Newsletter
 import org.example.blogmultiplatform.models.Post
 import org.example.blogmultiplatform.models.RandomJoke
 import org.example.blogmultiplatform.models.User
@@ -39,6 +40,27 @@ suspend fun fetchSponsoredPosts(
 ) {
     try {
         val result = window.api.tryGet(apiPath = "readsponsoredposts")?.decodeToString()
+        onSuccess(result.parseData())
+    } catch (e: Exception) {
+        println(e)
+        onError(e)
+    }
+}
+
+suspend fun subscribeToNewsletter(newsletter: Newsletter): String {
+    return window.api.tryPost(
+        apiPath = "subscribe",
+        body = Json.encodeToString(newsletter).encodeToByteArray()
+    )?.decodeToString().toString()
+}
+
+suspend fun fetchPopularPosts(
+    skip: Int,
+    onSuccess: (ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+    try {
+        val result = window.api.tryGet(apiPath = "readpopularposts?${SKIP_PARAM}=$skip")?.decodeToString()
         onSuccess(result.parseData())
     } catch (e: Exception) {
         println(e)
