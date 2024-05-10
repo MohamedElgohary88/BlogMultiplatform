@@ -28,6 +28,7 @@ import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import org.example.blogmultiplatform.components.CategoryNavigationItems
 import org.example.blogmultiplatform.components.SearchBar
+import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.utils.Constants.HEADER_HEIGHT
 import org.example.blogmultiplatform.utils.Constants.PAGE_WIDTH
@@ -38,7 +39,9 @@ import org.jetbrains.compose.web.css.px
 @Composable
 fun HeaderSection(
     breakpoint: Breakpoint,
-    onMenuOpen: () -> Unit
+    onMenuOpen: () -> Unit,
+    selectedCategory: Category? = null,
+    logo: String = Res.Image.LOGO_HOME,
 ) {
     Box(
         modifier = Modifier
@@ -55,7 +58,9 @@ fun HeaderSection(
         ) {
             Header(
                 breakpoint = breakpoint,
-                onMenuOpen = onMenuOpen
+                onMenuOpen = onMenuOpen,
+                logo = logo,
+                selectedCategory = selectedCategory,
             )
         }
     }
@@ -64,7 +69,9 @@ fun HeaderSection(
 @Composable
 fun Header(
     breakpoint: Breakpoint,
-    onMenuOpen: () -> Unit
+    onMenuOpen: () -> Unit,
+    selectedCategory: Category? = null,
+    logo: String = Res.Image.LOGO_HOME,
 ) {
     var fullSearchBarOpened by remember { mutableStateOf(false) }
     Row(
@@ -102,12 +109,12 @@ fun Header(
                     .width(if (breakpoint >= Breakpoint.SM) 100.px else 70.px)
                     .cursor(Cursor.Pointer)
                     .onClick { },
-                src = Res.Image.LOGO_HOME,
+                src = logo,
                 description = "Logo Image"
             )
         }
         if (breakpoint >= Breakpoint.LG) {
-            CategoryNavigationItems()
+            CategoryNavigationItems(selectedCategory = selectedCategory)
         }
         Spacer()
         SearchBar(

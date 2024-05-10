@@ -5,6 +5,7 @@ import com.varabyte.kobweb.api.init.InitApi
 import com.varabyte.kobweb.api.init.InitApiContext
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitLast
+import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Constants.POSTS_PER_PAGE
 import org.example.blogmultiplatform.models.Newsletter
 import org.example.blogmultiplatform.models.Post
@@ -66,6 +67,19 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
             if (newEmail) "Successfully Subscribed!"
             else "Something went wrong. Please try again later."
         }
+    }
+
+    override suspend fun searchPostsByCategory(
+        category: Category,
+        skip: Int
+    ): List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::category eq category)
+            .sort(descending(PostWithoutDetails::date))
+            .skip(skip)
+            .limit(POSTS_PER_PAGE)
+            .toList()
     }
 
     override suspend fun updatePost(post: Post): Boolean {

@@ -12,7 +12,9 @@ import kotlinx.serialization.json.Json
 import org.example.blogmultiplatform.data.MongoDB
 import org.example.blogmultiplatform.models.ApiListResponse
 import org.example.blogmultiplatform.models.ApiResponse
+import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Constants.AUTHOR_PARAM
+import org.example.blogmultiplatform.models.Constants.CATEGORY_PARAM
 import org.example.blogmultiplatform.models.Constants.POST_ID_PARAM
 import org.example.blogmultiplatform.models.Constants.QUERY_PARAM
 import org.example.blogmultiplatform.models.Constants.SKIP_PARAM
@@ -116,6 +118,22 @@ suspend fun readSponsoredPosts(context: ApiContext) {
     try {
         val sponsoredPosts = context.data.getValue<MongoDB>().readSponsoredPosts()
         context.res.setBody(ApiListResponse.Success(data = sponsoredPosts))
+    } catch (e: Exception) {
+        context.res.setBody(ApiListResponse.Error(message = e.message.toString()))
+    }
+}
+
+@Api(routeOverride = "searchpostsbycategory")
+suspend fun searchPostsByCategory(context: ApiContext) {
+    try {
+        val category =
+            Category.valueOf(context.req.params[CATEGORY_PARAM] ?: Category.Programming.name)
+        val skip = context.req.params[SKIP_PARAM]?.toInt() ?: 0
+        val posts = context.data.getValue<MongoDB>().searchPostsByCategory(
+            category = category,
+            skip = skip
+        )
+        context.res.setBody(ApiListResponse.Success(data = posts))
     } catch (e: Exception) {
         context.res.setBody(ApiListResponse.Error(message = e.message.toString()))
     }

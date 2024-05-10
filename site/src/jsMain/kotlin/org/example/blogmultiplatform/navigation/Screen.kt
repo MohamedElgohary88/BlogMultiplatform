@@ -1,5 +1,7 @@
 package org.example.blogmultiplatform.navigation
 
+import org.example.blogmultiplatform.models.Category
+import org.example.blogmultiplatform.models.Constants.CATEGORY_PARAM
 import org.example.blogmultiplatform.models.Constants.POST_ID_PARAM
 import org.example.blogmultiplatform.models.Constants.QUERY_PARAM
 import org.example.blogmultiplatform.models.Constants.UPDATED_PARAM
@@ -10,8 +12,14 @@ sealed class Screen(val route: String) {
     object AdminCreate : Screen(route = "/admin/create") {
         fun passPostId(id: String) = "/admin/create?${POST_ID_PARAM}=$id"
     }
+
     object AdminMyPosts : Screen(route = "/admin/myposts") {
         fun searchByTitle(query: String) = "/admin/myposts?${QUERY_PARAM}=$query"
+    }
+
+    object SearchPage : Screen(route = "/search/query") {
+        fun searchByCategory(category: Category) =
+            "/search/query?${CATEGORY_PARAM}=${category.name}"
     }
 
     object AdminSuccess : Screen(route = "/admin/success") {
