@@ -22,20 +22,26 @@ import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
+import kotlinx.browser.document
 import kotlinx.coroutines.launch
 import org.example.blogmultiplatform.components.CategoryNavigationItems
+import org.example.blogmultiplatform.components.LoadingIndicator
 import org.example.blogmultiplatform.components.OverflowSidePanel
 import org.example.blogmultiplatform.models.ApiListResponse
 import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Constants.CATEGORY_PARAM
 import org.example.blogmultiplatform.models.Constants.POSTS_PER_PAGE
+import org.example.blogmultiplatform.models.Constants.QUERY_PARAM
 import org.example.blogmultiplatform.models.PostWithoutDetails
 import org.example.blogmultiplatform.sections.HeaderSection
 import org.example.blogmultiplatform.sections.PostsSection
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
+import org.example.blogmultiplatform.utils.Id
 import org.example.blogmultiplatform.utils.Res
 import org.example.blogmultiplatform.utils.searchPostsByCategory
+import org.example.blogmultiplatform.utils.searchPostsByTitle
 import org.jetbrains.compose.web.css.px
+import org.w3c.dom.HTMLInputElement
 
 @Page(routeOverride = "query")
 @Composable
@@ -44,7 +50,11 @@ fun SearchPage() {
     val hasCategoryParam = remember(key1 = context.route) {
         context.route.params.containsKey(CATEGORY_PARAM)
     }
+    val hasQueryParam = remember(key1 = context.route) {
+        context.route.params.containsKey(QUERY_PARAM)
+    }
     val breakpoint = rememberBreakpoint()
+    var apiResponse by remember { mutableStateOf<ApiListResponse>(ApiListResponse.Idle) }
     val scope = rememberCoroutineScope()
     var overflowOpened by remember { mutableStateOf(false) }
     val searchedPosts = remember { mutableStateListOf<PostWithoutDetails>() }
@@ -53,18 +63,24 @@ fun SearchPage() {
     val value = remember(key1 = context.route) {
         if (hasCategoryParam) {
             context.route.params.getValue(CATEGORY_PARAM)
+        } else if (hasQueryParam) {
+            context.route.params.getValue(QUERY_PARAM)
         } else {
             ""
         }
     }
 
     LaunchedEffect(key1 = context.route) {
+        (document.getElementById(Id.ADMIN_SEARCH_BAR) as HTMLInputElement).value = ""
+        showMorePosts = false
         postsToSkip = 0
         if (hasCategoryParam) {
             searchPostsByCategory(
-                category = Category.valueOf(value),
+                category = runCatching { Category.valueOf(value) }
+                    .getOrElse { Category.Programming },
                 skip = postsToSkip,
                 onSuccess = { response ->
+                    apiResponse = response
                     if (response is ApiListResponse.Success) {
                         searchedPosts.clear()
                         searchedPosts.addAll(response.data)
@@ -76,6 +92,22 @@ fun SearchPage() {
 
                 }
             )
+        } else if (hasQueryParam) {
+            (document.getElementById(Id.ADMIN_SEARCH_BAR) as HTMLInputElement).value = value
+            searchPostsByTitle(
+                query = value,
+                skip = postsToSkip,
+                onSuccess = { response ->
+                    apiResponse = response
+                    if (response is ApiListResponse.Success) {
+                        searchedPosts.clear()
+                        searchedPosts.addAll(response.data)
+                        postsToSkip += POSTS_PER_PAGE
+                        if (response.data.size >= POSTS_PER_PAGE) showMorePosts = true
+                    }
+                },
+                onError = {}
+            )
         }
     }
     Column(
@@ -86,55 +118,90 @@ fun SearchPage() {
         if (overflowOpened) {
             OverflowSidePanel(
                 onMenuClose = { overflowOpened = false },
-                content = { CategoryNavigationItems(vertical = true) }
+                content = {
+                    CategoryNavigationItems(
+                        selectedCategory = if (hasCategoryParam) runCatching {
+                            Category.valueOf(value)
+                        }.getOrElse { Category.Programming } else null,
+                        vertical = true
+                    )
+                }
             )
         }
         HeaderSection(
             breakpoint = breakpoint,
-            selectedCategory = Category.valueOf(value),
+            selectedCategory = if (hasCategoryParam) runCatching {
+                Category.valueOf(value)
+            }.getOrElse { Category.Programming } else null,
             logo = Res.Image.LOGO,
             onMenuOpen = { overflowOpened = true }
         )
-        if (hasCategoryParam) {
-            SpanText(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .textAlign(TextAlign.Center)
-                    .margin(top = 100.px, bottom = 40.px)
-                    .fontFamily(FONT_FAMILY)
-                    .fontSize(36.px),
-                text = value
-            )
-        }
-        PostsSection(
-            breakpoint = breakpoint,
-            posts = searchedPosts,
-            showMoreVisibility = showMorePosts,
-            onShowMore = {
-                scope.launch {
-                    searchPostsByCategory(
-                        category = Category.valueOf(value),
-                        skip = postsToSkip,
-                        onSuccess = { response ->
-                            if (response is ApiListResponse.Success) {
-                                if (response.data.isNotEmpty()) {
-                                    if (response.data.size < POSTS_PER_PAGE) {
-                                        showMorePosts = false
-                                    }
-                                    searchedPosts.addAll(response.data)
-                                    postsToSkip += POSTS_PER_PAGE
-                                } else {
-                                    showMorePosts = false
-                                }
-                            }
-                        },
-                        onError = {}
-                    )
-                }
-            },
-            onClick = {
-
+        if (apiResponse is ApiListResponse.Success) {
+            if (hasCategoryParam) {
+                SpanText(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .textAlign(TextAlign.Center)
+                        .margin(top = 100.px, bottom = 40.px)
+                        .fontFamily(FONT_FAMILY)
+                        .fontSize(36.px),
+                    text = value.ifEmpty { Category.Programming.name }
+                )
             }
-        )
+            PostsSection(
+                breakpoint = breakpoint,
+                posts = searchedPosts,
+                showMoreVisibility = showMorePosts,
+                onShowMore = {
+                    scope.launch {
+                        if (hasCategoryParam) {
+                            searchPostsByCategory(
+                                category = runCatching { Category.valueOf(value) }
+                                    .getOrElse { Category.Programming },
+                                skip = postsToSkip,
+                                onSuccess = { response ->
+                                    if (response is ApiListResponse.Success) {
+                                        if (response.data.isNotEmpty()) {
+                                            if (response.data.size < POSTS_PER_PAGE) {
+                                                showMorePosts = false
+                                            }
+                                            searchedPosts.addAll(response.data)
+                                            postsToSkip += POSTS_PER_PAGE
+                                        } else {
+                                            showMorePosts = false
+                                        }
+                                    }
+                                },
+                                onError = {}
+                            )
+                        } else if (hasQueryParam) {
+                            searchPostsByTitle(
+                                query = value,
+                                skip = postsToSkip,
+                                onSuccess = { response ->
+                                    if (response is ApiListResponse.Success) {
+                                        if (response.data.isNotEmpty()) {
+                                            if (response.data.size < POSTS_PER_PAGE) {
+                                                showMorePosts = false
+                                            }
+                                            searchedPosts.addAll(response.data)
+                                            postsToSkip += POSTS_PER_PAGE
+                                        } else {
+                                            showMorePosts = false
+                                        }
+                                    }
+                                },
+                                onError = {}
+                            )
+                        }
+                    }
+                },
+                onClick = {
+
+                }
+            )
+        } else {
+            LoadingIndicator()
+        }
     }
 }

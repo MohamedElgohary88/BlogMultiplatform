@@ -28,12 +28,16 @@ fun CategoryNavigationItems(
     vertical: Boolean = false
 ) {
     val context = rememberPageContext()
-    Category.entries.forEach { category ->
+    Category.values().forEach { category ->
         Link(
             modifier = CategoryItemStyle.toModifier()
                 .thenIf(
                     condition = vertical,
                     other = Modifier.margin(bottom = 24.px)
+                )
+                .thenIf(
+                    condition = !vertical,
+                    other = Modifier.margin(right = 24.px)
                 )
                 .thenIf(
                     condition = selectedCategory == category,
