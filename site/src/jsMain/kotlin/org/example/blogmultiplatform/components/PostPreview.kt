@@ -40,10 +40,12 @@ import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
+import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
 import org.example.blogmultiplatform.models.PostWithoutDetails
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.navigation.Screen
+import org.example.blogmultiplatform.styles.PostPreviewStyle
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
 import org.example.blogmultiplatform.utils.parseDateString
 import org.jetbrains.compose.web.css.CSSColorValue
@@ -73,7 +75,8 @@ fun PostPreview(
     var checked by remember(selectableMode) { mutableStateOf(false) }
     if (vertical) {
         Column(
-            modifier = modifier
+            modifier = PostPreviewStyle.toModifier()
+                .then(modifier)
                 .fillMaxWidth(
                     if (darkTheme) 100.percent
                     else if (titleColor == Theme.Sponsored.rgb) 100.percent
@@ -115,7 +118,8 @@ fun PostPreview(
             )
         }
     } else {
-        Row(modifier = modifier
+        Row(modifier = PostPreviewStyle.toModifier()
+            .then(modifier)
             .onClick { onClick(post.id) }
             .cursor(Cursor.Pointer)
         ) {

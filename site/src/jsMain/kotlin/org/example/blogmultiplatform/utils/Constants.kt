@@ -54,4 +54,5 @@ object Id {
     const val LINK_TITLE_INPUT = "linkTitleInput"
     const val ADMIN_SEARCH_BAR = "adminSearchBar"
     const val EMAIL_INPUT = "emailInput"
+    const val POST_CONTENT = "postContent"
 }
