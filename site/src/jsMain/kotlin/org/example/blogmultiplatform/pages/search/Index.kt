@@ -33,6 +33,7 @@ import org.example.blogmultiplatform.models.Constants.CATEGORY_PARAM
 import org.example.blogmultiplatform.models.Constants.POSTS_PER_PAGE
 import org.example.blogmultiplatform.models.Constants.QUERY_PARAM
 import org.example.blogmultiplatform.models.PostWithoutDetails
+import org.example.blogmultiplatform.navigation.Screen
 import org.example.blogmultiplatform.sections.FooterSection
 import org.example.blogmultiplatform.sections.HeaderSection
 import org.example.blogmultiplatform.sections.PostsSection
@@ -197,9 +198,7 @@ fun SearchPage() {
                         }
                     }
                 },
-                onClick = {
-
-                }
+                onClick = { context.router.navigateTo(Screen.PostPage.getPost(id = it)) }
             )
         } else {
             LoadingIndicator()
