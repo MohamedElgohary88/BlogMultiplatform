@@ -16,6 +16,10 @@ compose-bom = "2023.08.00"
 junit-junit = "4.13.2"
 androidx-junit = "1.1.5"
 androidx-espresso-core = "3.5.1"
+navigation = "2.6.0"
+coroutines = "1.6.4"
+mongodb = "1.7.1"
+coil = "2.3.0"
 
 [libraries]
 kobweb-api = { module = "com.varabyte.kobweb:kobweb-api", version.ref = "kobweb" }
@@ -42,6 +46,10 @@ ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androi
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-espresso-core" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+mongodb-sync = { module = "io.realm.kotlin:library-sync", version.ref = "mongodb" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 [plugins]
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
@@ -49,6 +57,7 @@ kobweb-application = { id = "com.varabyte.kobweb.application", version.ref = "ko
 kobweb-library = { id = "com.varabyte.kobweb.library", version.ref = "kobweb" }
 kobweb-worker = { id = "com.varabyte.kobweb.worker", version.ref = "kobweb" }
 kobwebx-markdown = { id = "com.varabyte.kobwebx.markdown", version.ref = "kobweb" }
+mongodb-realm = { id = "io.realm.kotlin", version.ref = "mongodb" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 com-android-application = { id = "com.android.application", version.ref = "agp" }
