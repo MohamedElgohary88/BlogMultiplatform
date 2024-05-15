@@ -30,7 +30,6 @@ import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import kotlinx.browser.document
 import org.example.blogmultiplatform.components.CategoryNavigationItems
 import org.example.blogmultiplatform.components.SearchBar
-import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.navigation.Screen
 import org.example.blogmultiplatform.utils.Constants.HEADER_HEIGHT

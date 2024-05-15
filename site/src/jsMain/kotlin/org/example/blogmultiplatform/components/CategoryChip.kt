@@ -12,7 +12,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.silk.components.text.SpanText
-import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
 import org.jetbrains.compose.web.css.LineStyle

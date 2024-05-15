@@ -15,7 +15,6 @@ import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.style.toModifier
-import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.navigation.Screen
 import org.example.blogmultiplatform.styles.CategoryItemStyle

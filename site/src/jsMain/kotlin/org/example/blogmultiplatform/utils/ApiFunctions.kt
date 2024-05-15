@@ -4,12 +4,10 @@ import com.varabyte.kobweb.browser.api
 import com.varabyte.kobweb.browser.http.http
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.example.blogmultiplatform.models.ApiListResponse
 import org.example.blogmultiplatform.models.ApiResponse
-import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Constants.AUTHOR_PARAM
 import org.example.blogmultiplatform.models.Constants.CATEGORY_PARAM
 import org.example.blogmultiplatform.models.Constants.POST_ID_PARAM

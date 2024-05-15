@@ -49,6 +49,7 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(libs.kotlinx.serialization)
+            implementation(project(":shared"))
         }
 
         jsMain.dependencies {

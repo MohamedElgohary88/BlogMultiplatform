@@ -5,7 +5,6 @@ import com.varabyte.kobweb.api.init.InitApi
 import com.varabyte.kobweb.api.init.InitApiContext
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitLast
-import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Constants.POSTS_PER_PAGE
 import org.example.blogmultiplatform.models.Newsletter
 import org.example.blogmultiplatform.models.Post
