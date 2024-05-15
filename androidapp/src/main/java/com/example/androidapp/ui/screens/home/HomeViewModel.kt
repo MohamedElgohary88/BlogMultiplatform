@@ -25,6 +25,7 @@ class HomeViewModel : ViewModel() {
     init {
         viewModelScope.launch(Dispatchers.IO) {
             App.create(APP_ID).login(Credentials.anonymous())
+          //  MongoSync.addSamplePost()
             fetchAllPosts()
         }
     }
