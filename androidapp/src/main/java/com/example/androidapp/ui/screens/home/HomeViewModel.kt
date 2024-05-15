@@ -15,12 +15,16 @@ import io.realm.kotlin.mongodb.Credentials
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeViewModel : ViewModel() {
 
     private val _allPosts: MutableState<RequestState<List<Post>>> =
         mutableStateOf(RequestState.Idle)
     val allPosts: State<RequestState<List<Post>>> = _allPosts
+    private val _searchedPosts: MutableState<RequestState<List<Post>>> =
+        mutableStateOf(RequestState.Idle)
+    val searchedPosts: State<RequestState<List<Post>>> = _searchedPosts
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -31,11 +35,26 @@ class HomeViewModel : ViewModel() {
     }
 
     private suspend fun fetchAllPosts() {
+        withContext(Dispatchers.Main) {
+            _allPosts.value = RequestState.Loading
+        }
+        MongoSync.readAllPosts().collectLatest {
+            _allPosts.value = it
+        }
+    }
+
+    fun searchPostsByTitle(query: String) {
         viewModelScope.launch {
-            MongoSync.readAllPosts().collectLatest {
-                _allPosts.value = it
-                Log.d("HomeViewModel", it.toString())
+            withContext(Dispatchers.Main) {
+                _searchedPosts.value = RequestState.Loading
+            }
+            MongoSync.searchPostsByTitle(query = query).collectLatest {
+                _searchedPosts.value = it
             }
         }
+    }
+
+    fun resetSearchedPosts() {
+        _searchedPosts.value = RequestState.Idle
     }
 }
