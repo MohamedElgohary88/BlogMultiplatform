@@ -102,11 +102,12 @@ fun PostCard(
 fun PostCardsView(
     posts: RequestState<List<Post>>,
     topMargin: Dp,
-    hideMessage: Boolean = false
+    hideMessage: Boolean = false,
+    onPostClick: (String) -> Unit
 ) {
     when (posts) {
         is RequestState.Success -> {
-            if(posts.data.isNotEmpty()) {
+            if (posts.data.isNotEmpty()) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -118,7 +119,7 @@ fun PostCardsView(
                         items = posts.data,
                         key = { post -> post._id }
                     ) { post ->
-                        PostCard(post = post, onPostClick = {})
+                        PostCard(post = post, onPostClick = onPostClick)
                     }
                 }
             } else {

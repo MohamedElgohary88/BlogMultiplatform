@@ -55,6 +55,7 @@ import org.example.blogmultiplatform.components.Editor
 import org.example.blogmultiplatform.components.EditorControls
 import org.example.blogmultiplatform.components.MessagePopup
 import org.example.blogmultiplatform.models.ApiResponse
+import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Constants.POST_ID_PARAM
 import org.example.blogmultiplatform.models.ControlStyle
 import org.example.blogmultiplatform.models.EditorControl
@@ -366,7 +367,7 @@ fun CreateScreen() {
                                             author = localStorage["username"].toString(),
                                             title = uiState.title,
                                             subtitle = uiState.subtitle,
-                                            date = Date.now().toLong(),
+                                            date = Date.now(),
                                             thumbnail = uiState.thumbnail,
                                             content = uiState.content,
                                             category = uiState.category,

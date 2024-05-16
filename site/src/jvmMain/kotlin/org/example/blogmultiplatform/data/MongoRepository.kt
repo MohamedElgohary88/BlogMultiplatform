@@ -1,5 +1,6 @@
 package org.example.blogmultiplatform.data
 
+import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Newsletter
 import org.example.blogmultiplatform.models.Post
 import org.example.blogmultiplatform.models.PostWithoutDetails

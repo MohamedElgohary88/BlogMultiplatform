@@ -5,6 +5,7 @@ import com.varabyte.kobweb.api.init.InitApi
 import com.varabyte.kobweb.api.init.InitApiContext
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitLast
+import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Constants.POSTS_PER_PAGE
 import org.example.blogmultiplatform.models.Newsletter
 import org.example.blogmultiplatform.models.Post
@@ -32,7 +33,8 @@ fun initMongoDB(context: InitApiContext) {
 }
 
 class MongoDB(private val context: InitApiContext) : MongoRepository {
-    private val client = KMongo.createClient()
+    // private val client = KMongo.createClient()
+    private val client = KMongo.createClient("mongodb+srv://mohamedelgohary:mohamed123456789@mycluster.4duxvj9.mongodb.net/")
     private val database = client.getDatabase(DATABASE_NAME)
     private val userCollection = database.getCollection<User>()
     private val newsletterCollection = database.getCollection<Newsletter>()

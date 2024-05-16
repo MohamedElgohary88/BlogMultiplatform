@@ -8,6 +8,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.example.blogmultiplatform.models.ApiListResponse
 import org.example.blogmultiplatform.models.ApiResponse
+import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Constants.AUTHOR_PARAM
 import org.example.blogmultiplatform.models.Constants.CATEGORY_PARAM
 import org.example.blogmultiplatform.models.Constants.POST_ID_PARAM
@@ -61,6 +62,7 @@ suspend fun fetchPopularPosts(
 ) {
     try {
         val result = window.api.tryGet(apiPath = "readpopularposts?${SKIP_PARAM}=$skip")?.decodeToString()
+        println("popular posts $result")
         onSuccess(result.parseData())
     } catch (e: Exception) {
         println(e)
@@ -149,6 +151,7 @@ suspend fun fetchMyPosts(
         val result = window.api.tryGet(
             apiPath = "readmyposts?${SKIP_PARAM}=$skip&${AUTHOR_PARAM}=${localStorage["username"]}"
         )?.decodeToString()
+        println("my posts $result")
         onSuccess(result.parseData())
     } catch (e: Exception) {
         println(e)
@@ -162,6 +165,7 @@ suspend fun fetchMainPosts(
 ) {
     try {
         val result = window.api.tryGet(apiPath = "readmainposts")?.decodeToString()
+        println("main posts $result")
         onSuccess(result.parseData())
     } catch (e: Exception) {
         println(e)

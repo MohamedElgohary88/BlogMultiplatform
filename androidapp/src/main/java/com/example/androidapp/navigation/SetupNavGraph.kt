@@ -7,10 +7,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.example.androidapp.models.Category
+import com.example.androidapp.ui.screens.category.CategoryScreen
+import com.example.androidapp.ui.screens.category.CategoryViewModel
+import com.example.androidapp.ui.screens.category.categoryRoute
+import com.example.androidapp.ui.screens.detail.DetailsScreen
+import com.example.androidapp.ui.screens.detail.detailsRoute
 import com.example.androidapp.ui.screens.home.HomeScreen
 import com.example.androidapp.ui.screens.home.HomeViewModel
+import com.example.androidapp.ui.screens.home.homeRoute
+import org.example.blogmultiplatform.Constants.SHOW_SECTIONS_PARAM
 
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
@@ -18,36 +28,20 @@ fun SetupNavGraph(navController: NavHostController) {
         navController = navController,
         startDestination = Screen.Home.route
     ) {
-        composable(route = Screen.Home.route) {
-            val viewModel: HomeViewModel = viewModel()
-            var query by remember { mutableStateOf("") }
-            var searchBarOpened by remember { mutableStateOf(false) }
-            var active by remember { mutableStateOf(false) }
-            HomeScreen(
-                posts = viewModel.allPosts.value,
-                searchedPosts = viewModel.searchedPosts.value,
-                query = query,
-                searchBarOpened = searchBarOpened,
-                active = active,
-                onActiveChange = { active = it },
-                onQueryChange = { query = it },
-                onCategorySelect = {},
-                onSearchBarChange = { opened ->
-                    searchBarOpened = opened
-                    if (!opened) {
-                        query = ""
-                        active = false
-                        viewModel.resetSearchedPosts()
-                    }
-                },
-                onSearch = viewModel::searchPostsByTitle
-            )
-        }
-        composable(route = Screen.Category.route) {
-
-        }
-        composable(route = Screen.Details.route) {
-
-        }
+        homeRoute(
+            onCategorySelect = { category ->
+                navController.navigate(Screen.Category.passCategory(category))
+            },
+            onPostClick = { postId ->
+                navController.navigate(Screen.Details.passPostId(postId))
+            }
+        )
+        categoryRoute(
+            onBackPress = { navController.popBackStack() },
+            onPostClick = { postId ->
+                navController.navigate(Screen.Details.passPostId(postId))
+            }
+        )
+        detailsRoute(onBackPress = { navController.popBackStack() })
     }
 }

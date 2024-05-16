@@ -28,6 +28,7 @@ import org.example.blogmultiplatform.components.CategoryNavigationItems
 import org.example.blogmultiplatform.components.LoadingIndicator
 import org.example.blogmultiplatform.components.OverflowSidePanel
 import org.example.blogmultiplatform.models.ApiListResponse
+import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Constants.CATEGORY_PARAM
 import org.example.blogmultiplatform.models.Constants.POSTS_PER_PAGE
 import org.example.blogmultiplatform.models.Constants.QUERY_PARAM

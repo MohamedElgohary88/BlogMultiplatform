@@ -1,5 +1,6 @@
 package org.example.blogmultiplatform.navigation
 
+import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Constants.CATEGORY_PARAM
 import org.example.blogmultiplatform.models.Constants.POST_ID_PARAM
 import org.example.blogmultiplatform.models.Constants.QUERY_PARAM

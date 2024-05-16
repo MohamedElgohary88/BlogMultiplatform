@@ -30,6 +30,7 @@ import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import kotlinx.browser.document
 import org.example.blogmultiplatform.components.CategoryNavigationItems
 import org.example.blogmultiplatform.components.SearchBar
+import org.example.blogmultiplatform.models.Category
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.navigation.Screen
 import org.example.blogmultiplatform.utils.Constants.HEADER_HEIGHT
@@ -44,7 +45,7 @@ import org.w3c.dom.HTMLInputElement
 fun HeaderSection(
     breakpoint: Breakpoint,
     onMenuOpen: () -> Unit,
-    selectedCategory: Category? = null,
+    selectedCategory: org.example.blogmultiplatform.models.Category? = null,
     logo: String = Res.Image.LOGO_HOME,
 ) {
     Box(
