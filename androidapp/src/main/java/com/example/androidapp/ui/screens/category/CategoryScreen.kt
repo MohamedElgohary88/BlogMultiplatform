@@ -12,14 +12,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import com.example.androidapp.components.PostCardsView
 import com.example.androidapp.models.Category
-import com.example.androidapp.models.Post
+import com.example.androidapp.models.post
 import com.example.androidapp.util.RequestState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen(
-    posts: RequestState<List<Post>>,
+    posts: RequestState<List<post>>,
     category: Category,
     onBackPress: () -> Unit,
     onPostClick: (String) -> Unit

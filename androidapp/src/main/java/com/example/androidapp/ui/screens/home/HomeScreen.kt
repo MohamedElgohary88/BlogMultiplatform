@@ -1,12 +1,6 @@
 package com.example.androidapp.ui.screens.home
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -24,13 +18,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.androidapp.components.NavigationDrawer
-import com.example.androidapp.components.PostCard
 import com.example.androidapp.components.PostCardsView
 import com.example.androidapp.models.Category
-import com.example.androidapp.models.Post
+import com.example.androidapp.models.post
 import com.example.androidapp.util.RequestState
 import kotlinx.coroutines.launch
 
@@ -38,8 +30,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    posts: RequestState<List<Post>>,
-    searchedPosts: RequestState<List<Post>>,
+    posts: RequestState<List<post>>,
+    searchedPosts: RequestState<List<post>>,
     query: String,
     searchBarOpened: Boolean,
     active: Boolean,

@@ -27,14 +27,14 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.androidapp.models.Category
-import com.example.androidapp.models.Post
+import com.example.androidapp.models.post
 import com.example.androidapp.util.RequestState
 import com.example.androidapp.util.convertLongToDate
 import com.example.androidapp.util.decodeThumbnailImage
 
 @Composable
 fun PostCard(
-    post: Post,
+    post: post,
     onPostClick: (String) -> Unit
 ) {
     val context = LocalContext.current
@@ -100,7 +100,7 @@ fun PostCard(
 
 @Composable
 fun PostCardsView(
-    posts: RequestState<List<Post>>,
+    posts: RequestState<List<post>>,
     topMargin: Dp,
     hideMessage: Boolean = false,
     onPostClick: (String) -> Unit

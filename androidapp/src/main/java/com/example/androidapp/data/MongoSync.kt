@@ -1,7 +1,7 @@
 package com.example.androidapp.data
 
 import com.example.androidapp.models.Category
-import com.example.androidapp.models.Post
+import com.example.androidapp.models.post
 import com.example.androidapp.util.Constants.APP_ID
 import com.example.androidapp.util.RequestState
 import io.realm.kotlin.Realm
@@ -25,10 +25,10 @@ object MongoSync : MongoSyncRepository {
 
     override fun configureTheRealm() {
         if (user != null) {
-            val config = SyncConfiguration.Builder(user, setOf(Post::class))
+            val config = SyncConfiguration.Builder(user, setOf(post::class))
                 .initialSubscriptions {
                     add(
-                        query = it.query(Post::class),
+                        query = it.query(post::class),
                         name = "Blog Posts"
                     )
                 }
@@ -41,7 +41,7 @@ object MongoSync : MongoSyncRepository {
     override suspend fun addSamplePost() {
         if (user != null) {
             realm.write {
-                copyToRealm(Post().apply {
+                copyToRealm(post().apply {
                     _id = UUID.randomUUID().toString()
                     author = "Sample Author"
                     date = System.currentTimeMillis()
@@ -53,10 +53,10 @@ object MongoSync : MongoSyncRepository {
         }
     }
 
-    override fun readAllPosts(): Flow<RequestState<List<Post>>> {
+    override fun readAllPosts(): Flow<RequestState<List<post>>> {
         return if (user != null) {
             try {
-                realm.query(Post::class)
+                realm.query(post::class)
                     .asFlow()
                     .map { result ->
                         RequestState.Success(data = result.list)
@@ -69,10 +69,10 @@ object MongoSync : MongoSyncRepository {
         }
     }
 
-    override fun searchPostsByTitle(query: String): Flow<RequestState<List<Post>>> {
+    override fun searchPostsByTitle(query: String): Flow<RequestState<List<post>>> {
         return if (user != null) {
             try {
-                realm.query<Post>(query = "title CONTAINS[c] $0", query)
+                realm.query<post>(query = "title CONTAINS[c] $0", query)
                     .asFlow()
                     .map { result ->
                         RequestState.Success(data = result.list)
@@ -85,10 +85,10 @@ object MongoSync : MongoSyncRepository {
         }
     }
 
-    override fun searchPostsByCategory(category: Category): Flow<RequestState<List<Post>>> {
+    override fun searchPostsByCategory(category: Category): Flow<RequestState<List<post>>> {
         return if (user != null) {
             try {
-                realm.query<Post>(query = "category == $0", category.name)
+                realm.query<post>(query = "category == $0", category.name)
                     .asFlow()
                     .map { result ->
                         RequestState.Success(data = result.list)

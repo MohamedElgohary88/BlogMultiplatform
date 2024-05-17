@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidapp.data.MongoSync
 import androidx.compose.runtime.State
-import com.example.androidapp.models.Post
+import com.example.androidapp.models.post
 import com.example.androidapp.util.Constants.APP_ID
 import com.example.androidapp.util.RequestState
 import io.realm.kotlin.mongodb.App
@@ -19,12 +19,12 @@ import kotlinx.coroutines.withContext
 
 class HomeViewModel : ViewModel() {
 
-    private val _allPosts: MutableState<RequestState<List<Post>>> =
+    private val _allPosts: MutableState<RequestState<List<post>>> =
         mutableStateOf(RequestState.Idle)
-    val allPosts: State<RequestState<List<Post>>> = _allPosts
-    private val _searchedPosts: MutableState<RequestState<List<Post>>> =
+    val allPosts: State<RequestState<List<post>>> = _allPosts
+    private val _searchedPosts: MutableState<RequestState<List<post>>> =
         mutableStateOf(RequestState.Idle)
-    val searchedPosts: State<RequestState<List<Post>>> = _searchedPosts
+    val searchedPosts: State<RequestState<List<post>>> = _searchedPosts
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -41,6 +41,7 @@ class HomeViewModel : ViewModel() {
         MongoSync.readAllPosts().collectLatest {
             _allPosts.value = it
         }
+        Log.d("HomeViewModel", "fetchAllPosts: ${_allPosts.value}")
     }
 
     fun searchPostsByTitle(query: String) {
