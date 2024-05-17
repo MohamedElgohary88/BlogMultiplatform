@@ -45,6 +45,7 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import org.example.blogmultiplatform.models.PostWithoutDetails
 import org.example.blogmultiplatform.models.Theme
 import org.example.blogmultiplatform.navigation.Screen
+import org.example.blogmultiplatform.styles.MainPostPreviewStyle
 import org.example.blogmultiplatform.styles.PostPreviewStyle
 import org.example.blogmultiplatform.utils.Constants.FONT_FAMILY
 import org.example.blogmultiplatform.utils.parseDateString
@@ -75,7 +76,15 @@ fun PostPreview(
     var checked by remember(selectableMode) { mutableStateOf(false) }
     if (vertical) {
         Column(
-            modifier = PostPreviewStyle.toModifier()
+            modifier = Modifier
+                .thenIf(
+                    condition = post.main,
+                    other = MainPostPreviewStyle.toModifier()
+                )
+                .thenIf(
+                    condition = !post.main,
+                    other = PostPreviewStyle.toModifier()
+                )
                 .then(modifier)
                 .fillMaxWidth(
                     if (darkTheme) 100.percent
@@ -118,7 +127,16 @@ fun PostPreview(
             )
         }
     } else {
-        Row(modifier = PostPreviewStyle.toModifier()
+        Row(modifier = Modifier
+            .thenIf(
+                condition = post.main,
+                other = MainPostPreviewStyle.toModifier()
+            )
+            .thenIf(
+                condition = !post.main,
+                other = PostPreviewStyle.toModifier()
+            )
+            .height(thumbnailHeight)
             .then(modifier)
             .onClick { onClick(post.id) }
             .cursor(Cursor.Pointer)
@@ -159,6 +177,7 @@ fun PostContent(
     )
     Column(
         modifier = Modifier
+            .padding(all = 12.px)
             .thenIf(
                 condition = !vertical,
                 other = Modifier.margin(left = 20.px)
