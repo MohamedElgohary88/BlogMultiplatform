@@ -1,17 +1,18 @@
 #-----------------------------------------------------------------------------
-# Variables shared across multiple stages (they need to be explicitly opted
-# into each stage by being declaring there too, but their values need only be
-# specified once).
+# Variables are shared across multiple stages (they need to be explicitly
+# opted into each stage by being declaring there too, but their values need
+# only be specified once).
 ARG KOBWEB_APP_ROOT="site"
+# ^ NOTE: Kobweb apps generally live in a root "site" folder in your project,
+# but you can change this in case your project has a custom layout.
 
 FROM eclipse-temurin:17 as java
-
-FROM java as export
 
 #-----------------------------------------------------------------------------
 # Create an intermediate stage which builds and exports our site. In the
 # final stage, we'll only extract what we need from this stage, saving a lot
 # of space.
+FROM java as export
 
 ENV KOBWEB_CLI_VERSION=0.9.13
 ARG KOBWEB_APP_ROOT
