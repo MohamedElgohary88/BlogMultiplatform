@@ -1,53 +1,97 @@
-This is a [Kobweb](https://github.com/varabyte/kobweb) project bootstrapped with the `app/empty` template.
+## Blog Multiplatform
 
-This template is useful if you already know what you're doing and just want a clean slate. By default, it
-just creates a blank home page (which prints to the console so you can confirm it's working)
+Welcome to the **Blog Multiplatform** project! This repository contains the code for a full-featured blog platform that includes two websites (admin and user) and an Android application. The backend is powered by Kobweb and MongoDB, with amazing animations implemented across the entire project to enhance the user experience.
 
-If you are still learning, consider instantiating the `app` template (or one of the examples) to see actual,
-working projects.
+## video
 
-## Getting Started
 
-First, run the development server by typing the following command in a terminal under the `site` folder:
 
+## Features
+
+### Admin Website
+- **Search Posts**: Admins can search for posts using various filters.
+- **Create Posts**: Admins can create new posts with rich customization options, including adding code blocks, links, and images.
+- **Get All Posts**: Admins can view a list of all posts.
+- **Delete Specific Post**: Admins can delete specific posts as needed.
+- **Authentication**: Admins can log in and log out securely.
+
+### User Website and Android Application
+- **View All Posts**: Users can browse through all available posts.
+- **Filter by Category**: Users can filter posts by categories such as Programming, Design, and Technology.
+- **Search Posts**: Users can search for posts using keywords.
+- **Read Specific Post**: Users can read the detailed content of specific posts.
+
+## Technologies Used
+- **Frontend**: Kotlin Multiplatform (KMP)
+- **Backend**: Kobweb and MongoDB
+- **Mobile**: Android (Kotlin)
+- **Animations**: Smooth and engaging animations across all platforms
+
+## Setup and Installation
+
+### Prerequisites
+- **Java Development Kit (JDK)**
+- **Android Studio** (for Android development)
+- **IntelliJ IDEA** or **Visual Studio Code** (for web development)
+- **MongoDB** (for the database)
+
+### Clone the Repository
 ```bash
-$ cd site
-$ kobweb run
+git clone https://github.com/yourusername/BlogMultiplatform.git
+cd BlogMultiplatform
 ```
 
-Open [http://localhost:8080](http://localhost:8080) with your browser to see the result.
+### Backend Setup
+1. **Install MongoDB**: Follow the instructions on the [official MongoDB website](https://www.mongodb.com/try/download/community) to install MongoDB.
+2. **Run MongoDB**: Start the MongoDB server on your local machine.
+3. **Configure Backend**: Update the MongoDB connection settings in the `backend` configuration file.
 
-You can use any editor you want for the project, but we recommend using **IntelliJ IDEA Community Edition** downloaded
-using the [Toolbox App](https://www.jetbrains.com/toolbox-app/).
+### Running the Admin Website
+1. Navigate to the `admin-website` directory.
+2. Open the project in IntelliJ IDEA or Visual Studio Code.
+3. Build and run the project.
 
-Press `Q` in the terminal to gracefully stop the server.
+### Running the User's Website
+1. Navigate to the `user-website` directory.
+2. Open the project in IntelliJ IDEA or Visual Studio Code.
+3. Build and run the project.
 
-### Live Reload
+### Running the Android Application
+1. Open the `android-app` directory in Android Studio.
+2. Build and run the application on an emulator or physical device.
 
-Feel free to edit / add / delete new components, pages, and API endpoints! When you make any changes, the site will
-indicate the status of the build and automatically reload when ready.
+## Usage
 
-## Exporting the Project
+### Admin Website
+- **Login**: Access the admin panel by logging in with your credentials.
+- **Manage Posts**: Use the dashboard to create, search, view, and delete posts.
+- **Logout**: Securely log out from the admin panel.
 
-When you are ready to ship, you should shutdown the development server and then export the project using:
+### User Website and Android App
+- **Browse Posts**: View all posts or filter by category.
+- **Search**: Use the search bar to find specific posts.
+- **Read Posts**: Click on a post to read its full content.
 
-```bash
-kobweb export
+## Screenshots
+
+![image](https://github.com/MohamedElgohary88/my-potrfolio/assets/87489620/c90e20c8-aa00-48d5-83f8-d72f04f42255)
+*Admin dashboard with post-management features.*
+
+![image](https://github.com/MohamedElgohary88/my-potrfolio/assets/87489620/cba29716-36eb-42ed-8f37-75fc3685c592)
+*User homepage showcasing all posts with categories and search functionality.*
+
+![image](https://github.com/MohamedElgohary88/my-potrfolio/assets/87489620/db6ce184-fddf-43f9-926e-ef787e25e89e)
+*Android application with a list of posts and categories.*
+
+## Contributing
+
+Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to contribute to this project.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+
+## Contact
+
+For any inquiries or feedback, feel free to reach out via email at mohamed.abdelazim.elgohary@gmail.com or open an issue on GitHub.
 ```
-
-When finished, you can run a Kobweb server in production mode:
-
-```bash
-kobweb run --env prod
-```
-
-If you want to run this command in the Cloud provider of your choice, consider disabling interactive mode since nobody
-is sitting around watching the console in that case anyway. To do that, use:
-
-```bash
-kobweb run --env prod --notty
-```
-
-Kobweb also supports exporting to a static layout which is compatible with static hosting providers, such as GitHub
-Pages, Netlify, Firebase, any presumably all the others. You can read more about that approach here:
-https://bitspittle.dev/blog/2022/staticdeploy
