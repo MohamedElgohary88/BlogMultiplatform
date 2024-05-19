@@ -3,7 +3,7 @@
 Welcome to the **Blog Multiplatform** project! This repository contains the code for a full-featured blog platform that includes two websites (admin and user) and an Android application. The backend is powered by Kobweb and MongoDB, with amazing animations implemented across the entire project to enhance the user experience.
 
 ## video
-
+https://www.linkedin.com/posts/mohamed-elgohary8_kotlin-androiddevelopment-webdevelopment-activity-7198012597315473409-7xWd?utm_source=share&utm_medium=member_desktop
 
 
 ## Features
