@@ -37,7 +37,7 @@ https://www.linkedin.com/posts/mohamed-elgohary8_kotlin-androiddevelopment-webde
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/yourusername/BlogMultiplatform.git
+git clone https://github.com/MohamedElgohary88/BlogMultiplatform.git
 cd BlogMultiplatform
 ```
 
