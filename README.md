@@ -1,5 +1,7 @@
 ## Blog Multiplatform
 
+Case study: https://mohamedelgohary.dev/project/blog/
+
 Welcome to the **Blog Multiplatform** project! This repository contains the code for a full-featured blog platform that includes two websites (admin and user) and an Android application. The backend is powered by Kobweb and MongoDB, with amazing animations implemented across the entire project to enhance the user experience.
 
 ## video
